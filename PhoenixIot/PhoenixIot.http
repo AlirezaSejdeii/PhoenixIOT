@@ -1,0 +1,6 @@
+@PhoenixIot_HostAddress = http://localhost:5264
+
+GET {{PhoenixIot_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
