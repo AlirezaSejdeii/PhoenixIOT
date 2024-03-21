@@ -2,16 +2,15 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using PhoenixIot.Extension.Models;
 
 namespace PhoenixIot.Application.Extension;
 
 public static class AuthenticationExtension
 {
-    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, JwtConfig jwtConfig)
+    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services,string secret,string encryption)
     {
-        byte[] secretKey = Encoding.ASCII.GetBytes(jwtConfig.Secret);
-        byte[] encryptionKey = Encoding.ASCII.GetBytes(jwtConfig.EncryptionKey);
+        byte[] secretKey = Encoding.ASCII.GetBytes(secret);
+        byte[] encryptionKey = Encoding.ASCII.GetBytes(encryption);
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
