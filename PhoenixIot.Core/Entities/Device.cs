@@ -1,3 +1,5 @@
+using PhoenixIot.Core.Entities;
+
 namespace PhoenixIot.Entities;
 
 public class Device : BaseEntity

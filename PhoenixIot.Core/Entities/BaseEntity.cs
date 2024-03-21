@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace PhoenixIot.Entities;
+namespace PhoenixIot.Core.Entities;
 
 public abstract class BaseEntity
 {
