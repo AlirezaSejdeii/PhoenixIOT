@@ -1,4 +1,4 @@
-namespace PhoenixIot.Options;
+namespace PhoenixIot.Core.Options;
 
 public class MongoDbOptions
 {

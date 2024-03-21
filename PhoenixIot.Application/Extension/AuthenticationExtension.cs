@@ -1,9 +1,10 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PhoenixIot.Extension.Models;
 
-namespace PhoenixIot.Extension;
+namespace PhoenixIot.Application.Extension;
 
 public static class AuthenticationExtension
 {

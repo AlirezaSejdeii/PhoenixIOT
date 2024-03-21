@@ -1,7 +1,7 @@
 using PhoenixIot;
-using PhoenixIot.Extension;
+using PhoenixIot.Application.Extension;
+using PhoenixIot.Core.Options;
 using PhoenixIot.Extension.Models;
-using PhoenixIot.Options;
 using PhoenixIot.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);

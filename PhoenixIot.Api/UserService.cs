@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using PhoenixIot.Core.Options;
 using PhoenixIot.Entities;
-using PhoenixIot.Options;
 
 namespace PhoenixIot;
 
