@@ -1,4 +1,6 @@
 using PhoenixIot;
+using PhoenixIot.Extension;
+using PhoenixIot.Extension.Models;
 using PhoenixIot.Options;
 using PhoenixIot.Seeder;
 
@@ -14,6 +16,7 @@ builder.Services.Configure<MongoDbOptions>(builder.Configuration.GetSection("Mon
 // Services
 builder.Services.AddSingleton<SeedUsers>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddCustomAuthentication(builder.Configuration.GetValue<JwtConfig>("JwtConfig")!);
 
 var app = builder.Build();
 

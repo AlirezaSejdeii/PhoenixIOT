@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixIot", "PhoenixIot\PhoenixIot.csproj", "{FAEE7865-E959-4B9A-BBDB-B61B30C78333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixIot.Api", "PhoenixIot.Api\PhoenixIot.Api.csproj", "{FAEE7865-E959-4B9A-BBDB-B61B30C78333}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
