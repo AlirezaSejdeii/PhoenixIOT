@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixIot.Core", "PhoenixI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixIot.Application", "PhoenixIot.Application\PhoenixIot.Application.csproj", "{856221FE-88F3-4DA9-A9A4-D6BC88171654}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixIot.Infrastructure", "PhoenixIot.Infrastructure\PhoenixIot.Infrastructure.csproj", "{28508A3A-C8B7-4063-BB67-5F4B646D6003}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{856221FE-88F3-4DA9-A9A4-D6BC88171654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{856221FE-88F3-4DA9-A9A4-D6BC88171654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{856221FE-88F3-4DA9-A9A4-D6BC88171654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28508A3A-C8B7-4063-BB67-5F4B646D6003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28508A3A-C8B7-4063-BB67-5F4B646D6003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28508A3A-C8B7-4063-BB67-5F4B646D6003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28508A3A-C8B7-4063-BB67-5F4B646D6003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

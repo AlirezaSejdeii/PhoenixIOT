@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using PhoenixIot.Core.Options;
 using PhoenixIot.Entities;
 
-namespace PhoenixIot;
+namespace PhoenixIot.Infrastructure.Services;
 
 public class UserService
 {

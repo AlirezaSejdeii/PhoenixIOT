@@ -1,8 +1,7 @@
-using PhoenixIot;
-using PhoenixIot.Application.Extension;
+using PhoenixIot.Application;
 using PhoenixIot.Core.Options;
-using PhoenixIot.Extension.Models;
-using PhoenixIot.Seeder;
+using PhoenixIot.Infrastructure;
+using PhoenixIot.Infrastructure.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoDbOptions>(builder.Configuration.GetSection("MongoDb"));
 
 // Services
-builder.Services.AddSingleton<SeedUsers>();
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddCustomAuthentication(builder.Configuration.GetValue<JwtConfig>("JwtConfig")!);
+builder.Services.AddInfrastructure();
+builder.Services.AddApplication(builder.Configuration);
 
 var app = builder.Build();
 

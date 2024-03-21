@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Logging;
 using PhoenixIot.Entities;
+using PhoenixIot.Infrastructure.Services;
 
-namespace PhoenixIot.Seeder;
+namespace PhoenixIot.Infrastructure.Seeder;
 
 public class SeedUsers(UserService userService, ILogger<SeedUsers> logger)
 {
