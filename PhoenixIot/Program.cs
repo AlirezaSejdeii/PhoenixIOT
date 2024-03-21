@@ -1,8 +1,19 @@
+using PhoenixIot;
+using PhoenixIot.Options;
+using PhoenixIot.Seeder;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Options
+builder.Services.Configure<MongoDbOptions>(builder.Configuration.GetSection("MongoDb"));
+
+// Services
+builder.Services.AddSingleton<SeedUsers>();
+builder.Services.AddSingleton<UserService>();
 
 var app = builder.Build();
 
@@ -17,8 +28,10 @@ app.UseCors(x =>
 });
 app.UseRouting();
 app.UseHttpsRedirection();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+// Initialization
+SeedUsers userSeederService = app.Services.GetRequiredService<SeedUsers>();
+await userSeederService.SeedInitialUser();
+
 app.Run();

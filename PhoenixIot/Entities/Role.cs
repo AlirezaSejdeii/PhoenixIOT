@@ -1,8 +1,7 @@
 namespace PhoenixIot.Entities;
 
-public class Role
+public class Role : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
 }
