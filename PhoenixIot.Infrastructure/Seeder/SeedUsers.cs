@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using PhoenixIot.Entities;
-using PhoenixIot.Infrastructure.Services;
+using PhoenixIot.Application.Services;
+using PhoenixIot.Core.Entities;
 
 namespace PhoenixIot.Infrastructure.Seeder;
 
-public class SeedUsers(UserService userService, ILogger<SeedUsers> logger)
+public class SeedUsers(IUserService userService, ILogger<SeedUsers> logger) : ISeedUsers
 {
     private readonly ILogger _logger = logger;
 

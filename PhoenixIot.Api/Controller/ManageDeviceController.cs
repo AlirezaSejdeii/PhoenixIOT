@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using PhoenixIot.Infrastructure;
 
 namespace PhoenixIot.Controller;
 
 [ApiController]
 [Route("device-manager")]
-public class ManageDeviceController(ILogger<ManageDeviceController> logger) : ControllerBase
+public class ManageDeviceController(ILogger<ManageDeviceController> logger, AppDbContext dbContext) : ControllerBase
 {
     private readonly ILogger _logger = logger;
 

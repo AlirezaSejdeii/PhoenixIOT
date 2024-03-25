@@ -1,15 +1,8 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace PhoenixIot.Core.Entities;
 
 public abstract class BaseEntity
 {
-    [BsonElement("_id")]
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
-
+    public Guid Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

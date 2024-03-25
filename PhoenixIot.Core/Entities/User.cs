@@ -1,6 +1,4 @@
-using PhoenixIot.Core.Entities;
-
-namespace PhoenixIot.Entities;
+namespace PhoenixIot.Core.Entities;
 
 public class User : BaseEntity
 {
@@ -11,8 +9,12 @@ public class User : BaseEntity
         CreatedAt = now;
     }
 
+    protected User()
+    {
+    }
+
     public string Username { get; set; }
     public string Password { get; set; }
-    public List<Device> Devices { get; set; }
-    public List<Role> Roles { get; set; }
+    public List<Device> Devices { get; set; } = new();
+    public List<Role> Roles { get; set; } = new();
 }
