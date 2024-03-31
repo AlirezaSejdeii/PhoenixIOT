@@ -2,10 +2,11 @@ namespace PhoenixIot.Core.Entities;
 
 public class Role : BaseEntity
 {
-    public Role(string title, string description)
+    public Role(string title, string description,DateTime now)
     {
         Title = title;
         Description = description;
+        CreatedAt = now;
     }
 
     protected Role()

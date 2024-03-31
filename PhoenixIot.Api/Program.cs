@@ -30,8 +30,10 @@ app.UseCors(x =>
     x.AllowAnyOrigin();
 });
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
 
 // Initialization
 var scope = app.Services.CreateScope();

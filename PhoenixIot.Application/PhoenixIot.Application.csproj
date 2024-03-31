@@ -15,8 +15,4 @@
       <ProjectReference Include="..\PhoenixIot.Core\PhoenixIot.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
-
 </Project>
