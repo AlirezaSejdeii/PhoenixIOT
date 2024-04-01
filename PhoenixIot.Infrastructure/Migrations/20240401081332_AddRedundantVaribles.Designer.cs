@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhoenixIot.Infrastructure;
 
@@ -11,9 +12,11 @@ using PhoenixIot.Infrastructure;
 namespace PhoenixIot.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240401081332_AddRedundantVaribles")]
+    partial class AddRedundantVaribles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,11 +49,6 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("water_switch_on_humidity");
 
-                    b.Property<string>("Humidity")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
-                        .HasColumnName("humidity");
-
                     b.Property<string>("Identifier")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -61,17 +59,58 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("manual_setting");
 
-                    b.Property<string>("Temperature")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
-                        .HasColumnName("temperature");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("WaterSwitch1")
+                        .HasColumnType("bit")
+                        .HasColumnName("water_switch_1");
+
+                    b.Property<bool>("WaterSwitch2")
+                        .HasColumnType("bit")
+                        .HasColumnName("water_switch_2");
+
+                    b.Property<long?>("WaterSwitchOnAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WifiPassword")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("wifi_password");
+
+                    b.Property<string>("WifiUsername")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("wifi_username");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Devices");
+                });
+
+            modelBuilder.Entity("PhoenixIot.Core.Entities.DeviceVariables", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
                     b.Property<string>("Val1")
                         .HasMaxLength(64)
@@ -173,22 +212,15 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnType("nvarchar(64)")
                         .HasColumnName("val_9");
 
-                    b.Property<bool>("WaterSwitch1")
-                        .HasColumnType("bit")
-                        .HasColumnName("water_switch_1");
-
-                    b.Property<bool>("WaterSwitch2")
-                        .HasColumnType("bit")
-                        .HasColumnName("water_switch_2");
-
-                    b.Property<long?>("WaterSwitchOnAt")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("device_id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("device_id")
+                        .IsUnique();
 
-                    b.ToTable("Devices");
+                    b.ToTable("DeviceVariables");
                 });
 
             modelBuilder.Entity("PhoenixIot.Core.Entities.Role", b =>
@@ -279,6 +311,17 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PhoenixIot.Core.Entities.DeviceVariables", b =>
+                {
+                    b.HasOne("PhoenixIot.Core.Entities.Device", "Device")
+                        .WithOne()
+                        .HasForeignKey("PhoenixIot.Core.Entities.DeviceVariables", "device_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Device");
                 });
 
             modelBuilder.Entity("RoleUser", b =>

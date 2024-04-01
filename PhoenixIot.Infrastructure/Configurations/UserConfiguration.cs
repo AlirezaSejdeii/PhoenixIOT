@@ -4,7 +4,8 @@ using PhoenixIot.Core.Entities;
 
 namespace PhoenixIot.Infrastructure.Configurations;
 
-public class UserConfiguration:BaseConfiguration<User> {
+public class UserConfiguration : BaseConfiguration<User>
+{
     protected override void ExtraConfigure(EntityTypeBuilder<User> builder)
     {
         builder.Property(x => x.Username)

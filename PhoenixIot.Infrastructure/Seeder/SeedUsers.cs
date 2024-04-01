@@ -31,14 +31,6 @@ public class SeedUsers(IUserService userService, IRoleService roleService, ILogg
             await roleService.AddRole(adminRole);
         }
 
-        Role? userRole = await roleService.IsRoleExistByName(RolesNames.User);
-        if (userRole == null)
-        {
-            userRole =
-                new Role(RolesNames.User, "This role have access to their bought devices and not more", createDate);
-            await roleService.AddRole(userRole);
-        }
-
         await roleService.TryAddUserToRole(adminUser, adminRole);
     }
 }

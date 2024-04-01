@@ -9,4 +9,5 @@ public interface IUserService
     Task<User?> IsUserExistByDate(DateTime createdAt);
     TokenDto GenerateToken(User user);
     Task<User?> GetUserByUsernameAndPasswordAsync(string loginDtoUsername, string loginDtoPassword);
+    Task<bool> IsUserInRole(Guid userId, string roleTitle);
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
@@ -8,7 +9,7 @@ namespace PhoenixIot.Controller;
 
 [ApiController]
 [Route("users")]
-public class UsersController(IUserService userService) : ControllerBase
+public class UsersController(IUserService userService, IDeviceService deviceService) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)

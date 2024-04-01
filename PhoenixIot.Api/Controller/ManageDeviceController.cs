@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using PhoenixIot.Application.Models;
 using PhoenixIot.Infrastructure;
+using PhoenixIot.Models;
 
 namespace PhoenixIot.Controller;
 
 [ApiController]
-[Route("device-manager")]
+[Route("manager-device")]
 public class ManageDeviceController(ILogger<ManageDeviceController> logger, AppDbContext dbContext) : ControllerBase
 {
     private readonly ILogger _logger = logger;
@@ -35,7 +37,3 @@ public class ManageDeviceController(ILogger<ManageDeviceController> logger, AppD
         return NoContent();
     }
 }
-
-public record RelayStatus(bool Pin1, bool Pin2, bool Pin3, bool Pin4);
-
-public record HumidityAndTemperature(float Humidity, float Temperature);

@@ -4,7 +4,7 @@ using PhoenixIot.Core.Entities;
 
 namespace PhoenixIot.Infrastructure.Configurations;
 
-public class RoleConfiguration:BaseConfiguration<Role>
+public class RoleConfiguration : BaseConfiguration<Role>
 {
     protected override void ExtraConfigure(EntityTypeBuilder<Role> builder)
     {

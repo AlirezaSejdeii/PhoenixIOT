@@ -43,12 +43,12 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             }),
 
             Expires = DateTime.UtcNow.AddDays(jwtOptions.Value.ValidDays),
             SigningCredentials = signingCredentials,
-            // EncryptingCredentials = encryptingCredentials
+            EncryptingCredentials = encryptingCredentials
         };
         tokenDescriptor.Subject.AddClaims(rolesList);
 
@@ -67,5 +67,10 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
     {
         return await dbContext.Users.Include(x => x.Roles).FirstOrDefaultAsync(x =>
             x.Username == loginDtoUsername && x.Password == loginDtoPassword);
+    }
+
+    public async Task<bool> IsUserInRole(Guid userId, string roleTitle)
+    {
+        return await dbContext.Users.AnyAsync(x => x.Id == userId && x.Roles.Any(y => y.Title == roleTitle));
     }
 }
