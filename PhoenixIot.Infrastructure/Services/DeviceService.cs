@@ -9,7 +9,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 {
     public async Task CreateDevice(string identifier)
     {
-        Device device = new(identifier);
+        Device device = new(identifier, DateTime.UtcNow);
         await dbContext.Devices.AddAsync(device);
         await dbContext.SaveChangesAsync();
     }

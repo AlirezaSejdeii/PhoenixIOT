@@ -1,8 +1,18 @@
 namespace PhoenixIot.Core.Entities;
 
-public class Device(string identifier) : BaseEntity
+public class Device : BaseEntity
 {
-    public string Identifier { get; private set; } = identifier;
+    public Device(string identifier, DateTime now)
+    {
+        Identifier = identifier;
+        CreatedAt = now;
+    }
+
+    protected Device()
+    {
+    }
+
+    public string Identifier { get; private set; }
     public bool FanSwitch1 { get; private set; }
     public bool FanSwitch2 { get; private set; }
     public bool WaterSwitch1 { get; private set; }
@@ -91,7 +101,7 @@ public class Device(string identifier) : BaseEntity
         UpdatedAt = now;
     }
 
-    public void SetIdentifier(string newIdentifier,DateTime now)
+    public void SetIdentifier(string newIdentifier, DateTime now)
     {
         Identifier = newIdentifier;
         UpdatedAt = now;

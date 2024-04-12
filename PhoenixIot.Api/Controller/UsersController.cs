@@ -24,4 +24,18 @@ public class UsersController(IUserService userService, IDeviceService deviceServ
         TokenDto token = userService.GenerateToken(user);
         return Ok(token);
     }
+
+    [HttpPost]
+    [Authorize(RolesNames.Admin)]
+    public async Task<IActionResult> NewUser([FromBody] NewUser newUser)
+    {
+        bool isExist = await userService.CheckAnyUsernameAndPassword(newUser.Username, newUser.Password);
+        if (isExist)
+        {
+            return BadRequest("Username or password is not unique");
+        }
+
+        await userService.NewUser(newUser.Username, newUser.Password);
+        return Ok();
+    }
 }

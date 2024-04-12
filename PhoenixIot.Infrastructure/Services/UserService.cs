@@ -43,7 +43,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Id.ToString()),
             }),
 
             Expires = DateTime.UtcNow.AddDays(jwtOptions.Value.ValidDays),
@@ -72,5 +72,17 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
     public async Task<bool> IsUserInRole(Guid userId, string roleTitle)
     {
         return await dbContext.Users.AnyAsync(x => x.Id == userId && x.Roles.Any(y => y.Title == roleTitle));
+    }
+
+    public async Task<bool> CheckAnyUsernameAndPassword(string newUserUsername, string newUserPassword)
+    {
+        return await dbContext.Users.AnyAsync(x => x.Username == newUserUsername && x.Password == newUserPassword);
+    }
+
+    public async Task NewUser(string newUserUsername, string newUserPassword)
+    {
+        User user = new(newUserUsername, newUserPassword, DateTime.UtcNow);
+        await dbContext.AddAsync(user);
+        await dbContext.SaveChangesAsync();
     }
 }

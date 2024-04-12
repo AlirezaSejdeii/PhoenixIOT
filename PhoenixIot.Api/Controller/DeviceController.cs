@@ -27,6 +27,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     }
 
     [HttpGet("user-devices")]
+    [Authorize]
     public async Task<ActionResult<DeviceDto>> GetUserDevices([FromQuery] PagingDto paging)
     {
         Guid userId = Guid.Parse(User.Identity!.Name!);
@@ -35,9 +36,9 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
     [HttpPost("create")]
     [Authorize(Roles = RolesNames.Admin)]
-    public async Task<IActionResult> CreateDevice([FromBody] string identifier)
+    public async Task<IActionResult> CreateDevice([FromBody] NewDevice device)
     {
-        await deviceService.CreateDevice(identifier);
+        await deviceService.CreateDevice(device.Identifier);
         return NoContent();
     }
 
