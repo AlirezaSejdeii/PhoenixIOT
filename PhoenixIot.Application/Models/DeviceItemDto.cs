@@ -1,6 +1,7 @@
 namespace PhoenixIot.Application.Models;
 
 public record DeviceItemDto(
+    Guid Id,
     string Identifier,
     bool FanSwitch1,
     bool FanSwitch2,

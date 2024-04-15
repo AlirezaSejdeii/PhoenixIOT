@@ -17,4 +17,10 @@ public class User : BaseEntity
     public string Password { get; set; }
     public List<Device> Devices { get; set; } = new();
     public List<Role> Roles { get; set; } = new();
+
+    public void AssignNewDevice(Device device, DateTime utcNow)
+    {
+        Devices.Add(device);
+        UpdatedAt = utcNow;
+    }
 }

@@ -85,4 +85,26 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         await dbContext.AddAsync(user);
         await dbContext.SaveChangesAsync();
     }
+
+    public Task<User?> GetUserById(Guid assignInfoUserId)
+    {
+        return dbContext.Users.FirstOrDefaultAsync(x => x.Id == assignInfoUserId);
+    }
+
+    public async Task AssignDeviceToUserAsync(Device device, User user)
+    {
+        user.AssignNewDevice(device, DateTime.UtcNow);
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<UserListDto> GetAllUsersAsync(int page = 1, int size = 10)
+    {
+        IQueryable<UserInfoDto> infoList = dbContext.Users.Select(x => new UserInfoDto(x.Id, x.Username, x.CreatedAt));
+        int total = infoList.Count();
+        List<UserInfoDto> items = await infoList.Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync();
+        return new UserListDto(items, total);
+    }
 }

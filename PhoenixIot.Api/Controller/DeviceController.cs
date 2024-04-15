@@ -46,9 +46,10 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> UpdateIdentifier([FromBody] UpdateDevice updateDevice)
     {
-        logger.LogInformation("Update device identifier requested for device with Id: {Id}", updateDevice.Id);
+        logger.LogInformation("Update device identifier requested for device with CurrentId: {CurrentId}",
+            updateDevice.CurrentId);
         logger.LogInformation("Trying to find device by identifier");
-        Device? device = await deviceService.GetDeviceByIdentifierAsync(updateDevice.Id);
+        Device? device = await deviceService.GetDeviceByIdentifierAsync(updateDevice.CurrentId);
         if (device == null)
         {
             logger.LogInformation("Failed to find device");
@@ -59,7 +60,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         return NoContent();
     }
 
-    [HttpPost]
+    [HttpPost("update-relays")]
     [Authorize]
     public async Task<IActionResult> UpdateRelay(RelayUpdate update)
     {
@@ -78,11 +79,32 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         {
             logger.LogInformation("Device is not belong to user");
 
-            return Ok(HttpStatusCode.Forbidden);
+            return Forbid();
         }
 
         logger.LogInformation("Updating device");
         await deviceService.UpdateDeviceRelays(update, device);
         return NoContent();
+    }
+
+    [HttpPost("assign-device-to-user")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> AssignDeviceToUser(AssignDeviceToUserDto assignInfo)
+    {
+        Device? device = await deviceService.GetDeviceById(assignInfo.DeviceId);
+        if (device==null)
+        {
+            return NotFound("Device not found");
+        }
+
+        User? user = await userService.GetUserById(assignInfo.UserId);
+        if (user==null)
+        {
+            return NotFound("UserNotFound");
+        }
+
+        await userService.AssignDeviceToUserAsync(device, user);
+        return NoContent();
+
     }
 }

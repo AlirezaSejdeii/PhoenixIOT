@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
@@ -25,7 +24,7 @@ public class UsersController(IUserService userService, IDeviceService deviceServ
         return Ok(token);
     }
 
-    [HttpPost]
+    [HttpPost("new")]
     [Authorize(RolesNames.Admin)]
     public async Task<IActionResult> NewUser([FromBody] NewUser newUser)
     {
@@ -37,5 +36,13 @@ public class UsersController(IUserService userService, IDeviceService deviceServ
 
         await userService.NewUser(newUser.Username, newUser.Password);
         return Ok();
+    }
+
+    [HttpGet("get-all-users")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<ActionResult<UserListDto>> GetAllUsers([FromQuery] PagingDto paging)
+    {
+        UserListDto result = await userService.GetAllUsersAsync(paging.PageNumber, paging.PageSize);
+        return Ok(result);
     }
 }

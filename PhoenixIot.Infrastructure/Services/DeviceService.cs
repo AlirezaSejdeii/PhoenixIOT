@@ -86,6 +86,11 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         await dbContext.SaveChangesAsync();
     }
 
+    public Task<Device?> GetDeviceById(Guid deviceId)
+    {
+        return dbContext.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
+    }
+
     public Task UpdateDeviceRelays(RelayUpdate update)
     {
         throw new NotImplementedException();
@@ -95,6 +100,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
     {
         int total = devices.Count();
         List<DeviceItemDto> items = await devices.Select(x => new DeviceItemDto(
+                x.Id,
                 x.Identifier,
                 x.FanSwitch1,
                 x.FanSwitch2,
