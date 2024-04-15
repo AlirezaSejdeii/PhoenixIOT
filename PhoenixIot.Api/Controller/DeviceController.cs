@@ -70,7 +70,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (device == null)
         {
             logger.LogInformation("Device not be found");
-            return NotFound();
+            return NotFound("Device not found");
         }
 
         logger.LogInformation("Check is device belong to user");

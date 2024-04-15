@@ -39,7 +39,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 
     public Task<Device?> GetDeviceByIdentifierAsync(string identifier)
     {
-        return dbContext.Devices.FirstOrDefaultAsync(x => x.Identifier == identifier);
+        return dbContext.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Identifier == identifier);
     }
 
     public async Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device)
@@ -88,7 +88,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 
     public Task<Device?> GetDeviceById(Guid deviceId)
     {
-        return dbContext.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
+        return dbContext.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
     }
 
     public Task UpdateDeviceRelays(RelayUpdate update)

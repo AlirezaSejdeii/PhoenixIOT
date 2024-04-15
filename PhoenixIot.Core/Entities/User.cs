@@ -15,8 +15,8 @@ public class User : BaseEntity
 
     public string Username { get; set; }
     public string Password { get; set; }
-    public List<Device> Devices { get; set; } = new();
-    public List<Role> Roles { get; set; } = new();
+    public ICollection<Device> Devices { get; set; } = new List<Device>();
+    public ICollection<Role> Roles { get; set; } = new List<Role>();
 
     public void AssignNewDevice(Device device, DateTime utcNow)
     {
