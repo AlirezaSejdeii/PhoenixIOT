@@ -1,16 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Infrastructure;
-using PhoenixIot.Models;
 
 namespace PhoenixIot.Controller;
 
+/// <summary>
+/// It's just useful for device firmware.
+/// </summary>
 [ApiController]
 [Route("manager-device")]
 public class ManageDeviceController(ILogger<ManageDeviceController> logger, AppDbContext dbContext) : ControllerBase
 {
     private readonly ILogger _logger = logger;
 
+    /// <summary>
+    /// It's just useful for device firmware.
+    /// </summary>
     [HttpGet]
     public IActionResult GetRelayStatus()
     {
@@ -30,6 +35,9 @@ public class ManageDeviceController(ILogger<ManageDeviceController> logger, AppD
         return Ok(res);
     }
 
+    /// <summary>
+    /// It's just useful for device firmware.
+    /// </summary>
     [HttpPost]
     public IActionResult UpdateHumidityAndTemperature(HumidityAndTemperature status)
     {

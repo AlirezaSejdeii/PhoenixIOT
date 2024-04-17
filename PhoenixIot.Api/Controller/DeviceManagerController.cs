@@ -5,11 +5,17 @@ using PhoenixIot.Core.Entities;
 
 namespace PhoenixIot.Controller;
 
+/// <summary>
+/// It's just useful for device firmware.
+/// </summary>
 [ApiController]
 [Route("device-manager")]
 public class DeviceManagerController(IDeviceService deviceService, ILogger<DeviceManagerController> logger)
     : ControllerBase
 {
+    /// <summary>
+    /// It's just useful for device firmware.
+    /// </summary>
     [HttpGet("status/{identifier}")]
     public async Task<ActionResult<RelayStatus>> GetRelayStatus([FromRoute] string identifier)
     {
@@ -27,6 +33,9 @@ public class DeviceManagerController(IDeviceService deviceService, ILogger<Devic
         return relayStatus;
     }
 
+    /// <summary>
+    /// It's just useful for device firmware.
+    /// </summary>
     [HttpPost("update-variables/{identifier}")]
     public async Task<IActionResult> UpdateDeviceVariables(
         [FromRoute] string identifier,

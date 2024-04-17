@@ -13,17 +13,14 @@ namespace PhoenixIot.Controller;
 public class DeviceController(IUserService userService, IDeviceService deviceService, ILogger<DeviceController> logger)
     : ControllerBase
 {
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
     [Authorize(Roles = RolesNames.Admin)]
     [HttpGet("all-devices")]
     public async Task<ActionResult<DeviceDto>> GetAllDevices([FromQuery] PagingDto paging)
     {
-        Guid userId = Guid.Parse(User.Identity!.Name!);
-        if (await userService.IsUserInRole(userId, RolesNames.Admin))
-        {
-            return await deviceService.GetAllDevices(paging.PageNumber, paging.PageSize);
-        }
-
-        return Ok(HttpStatusCode.Forbidden);
+        return await deviceService.GetAllDevices(paging.PageNumber, paging.PageSize);
     }
 
     [HttpGet("user-devices")]
@@ -42,6 +39,9 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         return NoContent();
     }
 
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
     [HttpPut("update-identifier")]
     [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> UpdateIdentifier([FromBody] UpdateDevice updateDevice)
@@ -53,7 +53,8 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (device == null)
         {
             logger.LogInformation("Failed to find device");
-            return NotFound();
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+
         }
 
         await deviceService.UpdateIdentifier(device, updateDevice.NewIdentifier);
@@ -70,7 +71,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (device == null)
         {
             logger.LogInformation("Device not be found");
-            return NotFound("Device not found");
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
         logger.LogInformation("Check is device belong to user");
@@ -79,7 +80,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         {
             logger.LogInformation("Device is not belong to user");
 
-            return Forbid();
+            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
         }
 
         logger.LogInformation("Updating device");
@@ -87,24 +88,26 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         return NoContent();
     }
 
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
     [HttpPost("assign-device-to-user")]
     [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> AssignDeviceToUser(AssignDeviceToUserDto assignInfo)
     {
         Device? device = await deviceService.GetDeviceById(assignInfo.DeviceId);
-        if (device==null)
+        if (device == null)
         {
-            return NotFound("Device not found");
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
         User? user = await userService.GetUserById(assignInfo.UserId);
-        if (user==null)
+        if (user == null)
         {
-            return NotFound("UserNotFound");
+            return Ok(new ErrorModel("کاربر یافت نشد"));
         }
 
         await userService.AssignDeviceToUserAsync(device, user);
         return NoContent();
-
     }
 }

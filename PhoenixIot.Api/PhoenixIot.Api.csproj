@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <RootNamespace>PhoenixIot</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,5 +28,4 @@
     <ItemGroup>
       <ProjectReference Include="..\PhoenixIot.Infrastructure\PhoenixIot.Infrastructure.csproj" />
     </ItemGroup>
-
 </Project>
