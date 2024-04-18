@@ -200,13 +200,16 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Sensor)
         {
-            if (decimal.Parse(Temperature!) >= FanSwitchOnAt && decimal.Parse(Temperature!) <= FanSwitchOffAt && FanSwitch1 &&
-                FanSwitch2)
-            {
-                return true;
-            }
+            bool isFanSwitchSync = (decimal.Parse(Temperature!) >= FanSwitchOnAt &&
+                                    decimal.Parse(Temperature!) <= FanSwitchOffAt &&
+                                    FanSwitch1 && FanSwitch2) ||
+                                   (decimal.Parse(Temperature!) <= FanSwitchOnAt &&
+                                    decimal.Parse(Temperature!) >= FanSwitchOffAt &&
+                                    !FanSwitch1 && !FanSwitch2);
+            bool isWaterSwitchSync = (decimal.Parse(Humidity!) <= WaterSwitchOffAt && WaterSwitch1 && WaterSwitch2) ||
+                                     (decimal.Parse(Humidity!) >= WaterSwitchOffAt && !WaterSwitch1 && !WaterSwitch2);
 
-            return decimal.Parse(Humidity!) <= WaterSwitchOffAt && WaterSwitch1 && WaterSwitch2;
+            return isFanSwitchSync && isWaterSwitchSync;
         }
 
         if (Setting == SettingMode.Timer)
@@ -237,7 +240,8 @@ public class Device : BaseEntity
         UpdatedAt = utcNow;
     }
 
-    public void SetSensorValues(int updateFanOnAtTemp, int updateFanOffAtTemp, int updateWaterOffFromHumidity, DateTime utcNow)
+    public void SetSensorValues(int updateFanOnAtTemp, int updateFanOffAtTemp, int updateWaterOffFromHumidity,
+        DateTime utcNow)
     {
         Setting = SettingMode.Sensor;
         FanSwitchOnAt = updateFanOnAtTemp;
