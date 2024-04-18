@@ -7,7 +7,7 @@ public record DeviceItemDto(
     bool FanSwitch2,
     bool WaterSwitch1,
     bool WaterSwitch2,
-    bool ManualSetting,
+    string Setting,
     uint? FanSwitchOnAt,
     uint? WaterSwitchOnAt,
     string? BelongToUsername,

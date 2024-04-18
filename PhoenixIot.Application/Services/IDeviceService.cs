@@ -14,4 +14,5 @@ public interface IDeviceService
     Task UpdateIdentifier(Device device, string updateDeviceNewIdentifier);
     Task UpdateDeviceRelays(RelayUpdate update, Device device);
     Task<Device?> GetDeviceById(Guid deviceId);
+    Task DeleteDevice(Device device);
 }

@@ -1,3 +1,5 @@
+using PhoenixIot.Core.Enums;
+
 namespace PhoenixIot.Core.Entities;
 
 public class Device : BaseEntity
@@ -18,7 +20,7 @@ public class Device : BaseEntity
     public bool WaterSwitch1 { get; private set; }
     public bool WaterSwitch2 { get; private set; }
 
-    public bool ManualSetting { get; private set; }
+    public SettingMode Setting { get; private set; }
 
     // Even manual setting false, relay on this humidity 
     public uint? FanSwitchOnAt { get; private set; } = 50;
@@ -27,6 +29,7 @@ public class Device : BaseEntity
     public uint? WaterSwitchOnAt { get; private set; } = 30;
 
     public User? User { get; private set; }
+    public DateTime? LastSync { get;private set; }
 
     public string? Temperature { get; private set; }
     public string? Humidity { get; private set; }

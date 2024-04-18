@@ -91,10 +91,12 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         return dbContext.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
     }
 
-    public Task UpdateDeviceRelays(RelayUpdate update)
+    public async Task DeleteDevice(Device device)
     {
-        throw new NotImplementedException();
+        dbContext.Devices.Remove(device);
+        await dbContext.SaveChangesAsync();
     }
+
 
     private async Task<DeviceDto> GetResult(IQueryable<Device> devices, int page = 1, int size = 10)
     {
@@ -106,7 +108,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
                 x.FanSwitch2,
                 x.WaterSwitch1,
                 x.WaterSwitch2,
-                x.ManualSetting,
+                x.Setting.ToString(),
                 x.FanSwitchOnAt,
                 x.WaterSwitchOnAt,
                 x.User == null ? null : x.User.Username,

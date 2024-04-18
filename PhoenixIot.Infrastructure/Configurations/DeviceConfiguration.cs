@@ -24,9 +24,12 @@ public class DeviceConfiguration : BaseConfiguration<Device>
         
         builder.Property(x => x.WaterSwitch2)
             .HasColumnName("water_switch_2");
+
+        builder.Property(x => x.Setting)
+            .HasColumnName("setting");
         
-        builder.Property(x => x.ManualSetting)
-            .HasColumnName("manual_setting");
+        builder.Property(x => x.LastSync)
+            .HasColumnName("last_sync");
         
         builder.Property(x => x.FanSwitchOnAt)
             .HasColumnName("fan_switch_on_temp")

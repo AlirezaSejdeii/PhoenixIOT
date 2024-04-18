@@ -54,7 +54,6 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         {
             logger.LogInformation("Failed to find device");
             return Ok(new ErrorModel("دستگاه یافت نشد"));
-
         }
 
         await deviceService.UpdateIdentifier(device, updateDevice.NewIdentifier);
@@ -108,6 +107,23 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         }
 
         await userService.AssignDeviceToUserAsync(device, user);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
+    [HttpDelete("delete-device/{id:guid}")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> DeleteDevice(Guid id)
+    {
+        Device? device = await deviceService.GetDeviceById(id);
+        if (device is null)
+        {
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+        }
+
+        await deviceService.DeleteDevice(device);
         return NoContent();
     }
 }
