@@ -139,6 +139,8 @@ void loop() {
       digitalWrite(relay_pin2, doc["pin2"] ? LOW : HIGH);
       digitalWrite(relay_pin3, doc["pin3"] ? LOW : HIGH);
       digitalWrite(relay_pin4, doc["pin4"] ? LOW : HIGH);
+      http.begin(client, String(serverUrl) + "/device-manager/update-last-sync/" + String(identifier));
+      http.PUT("");
     } else {
       Serial.println("Error on HTTP request");
     }

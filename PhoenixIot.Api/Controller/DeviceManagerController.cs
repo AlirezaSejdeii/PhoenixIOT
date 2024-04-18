@@ -52,4 +52,22 @@ public class DeviceManagerController(IDeviceService deviceService, ILogger<Devic
         await deviceService.UpdateVariablesAsync(deviceDto, device);
         return NoContent();
     }
+
+    /// <summary>
+    /// It's just useful for device firmware.
+    /// </summary>
+    [HttpPut("update-last-sync/{identifier}")]
+    public async Task<IActionResult> UpdateLastSync([FromRoute] string identifier)
+    {
+        logger.LogInformation("Updating last sync for device by identifier: {Identifier}", identifier);
+        Device? device = await deviceService.GetDeviceByIdentifierAsync(identifier);
+        if (device == null)
+        {
+            logger.LogInformation("Failed to find device");
+            return NotFound();
+        }
+
+        await deviceService.UpdateLastSync(device);
+        return NoContent();
+    }
 }

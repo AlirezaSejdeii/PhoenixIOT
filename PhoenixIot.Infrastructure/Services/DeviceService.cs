@@ -97,6 +97,12 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateLastSync(Device device)
+    {
+        device.UpdateLastSync(DateTime.UtcNow);
+        await dbContext.SaveChangesAsync();
+    }
+
 
     private async Task<DeviceDto> GetResult(IQueryable<Device> devices, int page = 1, int size = 10)
     {

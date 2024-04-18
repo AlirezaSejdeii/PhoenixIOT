@@ -29,7 +29,7 @@ public class Device : BaseEntity
     public uint? WaterSwitchOnAt { get; private set; } = 30;
 
     public User? User { get; private set; }
-    public DateTime? LastSync { get;private set; }
+    public DateTime? LastSync { get; private set; }
 
     public string? Temperature { get; private set; }
     public string? Humidity { get; private set; }
@@ -127,5 +127,11 @@ public class Device : BaseEntity
         }
 
         return false;
+    }
+
+    public void UpdateLastSync(DateTime utcNow)
+    {
+        LastSync = utcNow;
+        UpdatedAt = utcNow;
     }
 }

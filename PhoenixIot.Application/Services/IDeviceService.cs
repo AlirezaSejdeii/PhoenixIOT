@@ -15,4 +15,5 @@ public interface IDeviceService
     Task UpdateDeviceRelays(RelayUpdate update, Device device);
     Task<Device?> GetDeviceById(Guid deviceId);
     Task DeleteDevice(Device device);
+    Task UpdateLastSync(Device device);
 }
