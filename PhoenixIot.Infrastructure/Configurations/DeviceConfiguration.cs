@@ -12,44 +12,54 @@ public class DeviceConfiguration : BaseConfiguration<Device>
             .HasColumnName("identifier")
             .HasMaxLength(100)
             .IsRequired();
-        
+
         builder.Property(x => x.FanSwitch1)
             .HasColumnName("fan_switch_1");
-        
+
         builder.Property(x => x.FanSwitch2)
             .HasColumnName("fan_switch_2");
-        
+
         builder.Property(x => x.WaterSwitch1)
             .HasColumnName("water_switch_1");
-        
+
         builder.Property(x => x.WaterSwitch2)
             .HasColumnName("water_switch_2");
 
         builder.Property(x => x.Setting)
             .HasColumnName("setting");
-        
+
         builder.Property(x => x.LastSync)
             .HasColumnName("last_sync");
-        
+
         builder.Property(x => x.FanSwitchOnAt)
-            .HasColumnName("fan_switch_on_temp")
-            .IsRequired(false);
-        
-        builder.Property(x => x.FanSwitchOnAt)
-            .HasColumnName("water_switch_on_humidity")
-            .IsRequired(false);
-        
+            .HasColumnName("fan_switch_on_at")
+            .IsRequired();
+
+        builder.Property(x => x.FanSwitchOffAt)
+            .HasColumnName("fan_switch_off_at")
+            .IsRequired();
+
+        builder.Property(x => x.WaterSwitchOffAt)
+            .HasColumnName("water_switch_off_from")
+            .IsRequired();
+
+        builder.Property(x => x.StartWorkAt)
+            .HasColumnName("start_work_at");
+
+        builder.Property(x => x.EndWorkAt)
+            .HasColumnName("end_work_at");
+
         builder.HasOne(x => x.User)
             .WithMany(x => x.Devices);
-        
+
         builder.Property(x => x.Temperature)
             .HasColumnName("temperature")
             .HasMaxLength(64);
-        
+
         builder.Property(x => x.Humidity)
             .HasColumnName("humidity")
             .HasMaxLength(64);
-       
+
         builder.Property(x => x.Val1)
             .HasColumnName("val_1")
             .HasMaxLength(64);

@@ -22,11 +22,20 @@ public class Device : BaseEntity
 
     public SettingMode Setting { get; private set; }
 
-    // Even manual setting false, relay on this humidity 
-    public uint? FanSwitchOnAt { get; private set; } = 50;
+    // ---------------------------------------------------------------------------------
+    // These setting just work when the Setting set Sensor
+    // Fan do their job when Temperature is X and end their job when Temperature is Y
+    public int FanSwitchOnAt { get; private set; } = 25;
+    public int FanSwitchOffAt { get; private set; } = 30;
 
-    // Even manual setting false, relay on thus temperature
-    public uint? WaterSwitchOnAt { get; private set; } = 30;
+    // Water switch should be OFF when Humidity is equal and greater than X
+    public int WaterSwitchOffAt { get; private set; } = 50;
+
+    // ---------------------------------------------------------------------------------
+    // These setting just work when the Setting set Timer
+    public TimeOnly StartWorkAt { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
+    public TimeOnly EndWorkAt { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
+    // ---------------------------------------------------------------------------------
 
     public User? User { get; private set; }
     public DateTime? LastSync { get; private set; }
