@@ -34,6 +34,10 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             return null;
         }
 
+        device.SetupDeviceRelays(DateTime.UtcNow);
+        dbContext.Update(device);
+        await dbContext.SaveChangesAsync();
+
         return new RelayStatus(device.FanSwitch1, device.FanSwitch2, device.WaterSwitch1, device.WaterSwitch2);
     }
 
@@ -103,6 +107,20 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateTimer(TimerUpdate update, Device device)
+    {
+        device.SetTimer(TimeOnly.FromDateTime(update.StartAt),TimeOnly.FromDateTime(update.EndAt), DateTime.UtcNow);
+        dbContext.Devices.Update(device);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateSensor(SensorUpdate update, Device device)
+    {
+        device.SetSensorValues(update.FanOnAtTemp, update.FanOffAtTemp, update.WaterOffFromHumidity, DateTime.UtcNow);
+        dbContext.Devices.Update(device);
+        await dbContext.SaveChangesAsync();
+    }
+
 
     private async Task<DeviceDto> GetResult(IQueryable<Device> devices, int page = 1, int size = 10)
     {
@@ -142,7 +160,8 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
                 x.Val17,
                 x.Val18,
                 x.Val19,
-                x.Val20))
+                x.Val20,
+                x.IsSync(DateTime.UtcNow)))
             .Skip((page - 1) * size)
             .Take(size)
             .ToListAsync();

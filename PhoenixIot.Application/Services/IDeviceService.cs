@@ -12,8 +12,10 @@ public interface IDeviceService
     Task<Device?> GetDeviceByIdentifierAsync(string identifier);
     Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device);
     Task UpdateIdentifier(Device device, string updateDeviceNewIdentifier);
-    Task UpdateDeviceRelays(RelayUpdate update, Device device);
     Task<Device?> GetDeviceById(Guid deviceId);
     Task DeleteDevice(Device device);
     Task UpdateLastSync(Device device);
+    Task UpdateDeviceRelays(RelayUpdate update, Device device);
+    Task UpdateTimer(TimerUpdate update, Device device);
+    Task UpdateSensor(SensorUpdate update, Device device);
 }

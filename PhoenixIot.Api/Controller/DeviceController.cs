@@ -60,6 +60,9 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         return NoContent();
     }
 
+    /// <summary>
+    /// When you call this endpoint, the setting will set to Manual
+    /// </summary>
     [HttpPost("update-relays")]
     [Authorize]
     public async Task<IActionResult> UpdateRelay(RelayUpdate update)
@@ -84,6 +87,67 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
         logger.LogInformation("Updating device");
         await deviceService.UpdateDeviceRelays(update, device);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// When you call this endpoint, the setting will set to Timer
+    /// </summary>
+    [HttpPost("update-timer")]
+    [Authorize]
+    public async Task<IActionResult> UpdateTimer(TimerUpdate update)
+    {
+        logger.LogInformation("Trying to update timer for device with identifier: {Identifier}",
+            update.Identifier);
+        Device? device = await deviceService.GetDeviceByIdentifierAsync(update.Identifier);
+        if (device == null)
+        {
+            logger.LogInformation("Device not be found");
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+        }
+
+        logger.LogInformation("Check is device belong to user");
+        Guid userId = Guid.Parse(User.Identity!.Name!);
+        if (!device.IsBelongToUser(userId))
+        {
+            logger.LogInformation("Device is not belong to user");
+
+            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+        }
+
+        logger.LogInformation("Updating device");
+        await deviceService.UpdateTimer(update, device);
+        return NoContent();
+    }
+
+
+    /// <summary>
+    /// When you call this endpoint, the setting will set to Sensor
+    /// </summary>
+    [HttpPost("update-sensor")]
+    [Authorize]
+    public async Task<IActionResult> UpdateSensor(SensorUpdate update)
+    {
+        logger.LogInformation("Trying to update timer for device with identifier: {Identifier}",
+            update.Identifier);
+        Device? device = await deviceService.GetDeviceByIdentifierAsync(update.Identifier);
+        if (device == null)
+        {
+            logger.LogInformation("Device not be found");
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+        }
+
+        logger.LogInformation("Check is device belong to user");
+        Guid userId = Guid.Parse(User.Identity!.Name!);
+        if (!device.IsBelongToUser(userId))
+        {
+            logger.LogInformation("Device is not belong to user");
+
+            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+        }
+
+        logger.LogInformation("Updating device");
+        await deviceService.UpdateSensor(update, device);
         return NoContent();
     }
 

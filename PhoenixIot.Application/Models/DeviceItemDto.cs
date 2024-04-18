@@ -35,5 +35,6 @@ public record DeviceItemDto(
     string? Val17,
     string? Val18,
     string? Val19,
-    string? Val20
+    string? Val20,
+    bool IsSync
 );

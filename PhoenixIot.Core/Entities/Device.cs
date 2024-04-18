@@ -121,6 +121,7 @@ public class Device : BaseEntity
 
     public void UpdateRelays(bool updateFan1, bool updateFan2, bool updateWater1, bool updateWater2, DateTime now)
     {
+        Setting = SettingMode.Manual;
         FanSwitch1 = updateFan1;
         FanSwitch2 = updateFan2;
         WaterSwitch1 = updateWater1;
@@ -141,6 +142,107 @@ public class Device : BaseEntity
     public void UpdateLastSync(DateTime utcNow)
     {
         LastSync = utcNow;
+        UpdatedAt = utcNow;
+    }
+
+    public void SetupDeviceRelays(DateTime utcNow)
+    {
+        if (Setting == SettingMode.Sensor)
+        {
+            if (decimal.Parse(Temperature!) >= FanSwitchOnAt && decimal.Parse(Temperature!) <= FanSwitchOffAt)
+            {
+                FanSwitch1 = true;
+                FanSwitch2 = true;
+            }
+            else
+            {
+                FanSwitch1 = false;
+                FanSwitch2 = false;
+            }
+
+            if (decimal.Parse(Humidity!) <= WaterSwitchOffAt)
+            {
+                WaterSwitch1 = true;
+                WaterSwitch2 = true;
+            }
+            else
+            {
+                WaterSwitch1 = false;
+                WaterSwitch2 = false;
+            }
+        }
+
+        if (Setting == SettingMode.Timer)
+        {
+            if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan())
+            {
+                FanSwitch1 = true;
+                FanSwitch2 = true;
+                WaterSwitch1 = true;
+                WaterSwitch2 = true;
+            }
+            else
+            {
+                FanSwitch1 = false;
+                FanSwitch2 = false;
+                WaterSwitch1 = false;
+                WaterSwitch2 = false;
+            }
+        }
+    }
+
+    public bool IsSync(DateTime utcNow)
+    {
+        if (Setting == SettingMode.Manual)
+        {
+            return LastSync >= UpdatedAt?.AddSeconds(-10);
+        }
+
+        if (Setting == SettingMode.Sensor)
+        {
+            if (decimal.Parse(Temperature!) >= FanSwitchOnAt && decimal.Parse(Temperature!) <= FanSwitchOffAt && FanSwitch1 &&
+                FanSwitch2)
+            {
+                return true;
+            }
+
+            return decimal.Parse(Humidity!) <= WaterSwitchOffAt && WaterSwitch1 && WaterSwitch2;
+        }
+
+        if (Setting == SettingMode.Timer)
+        {
+            if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan() &&
+                FanSwitch1 && FanSwitch2 && WaterSwitch1 && WaterSwitch2)
+            {
+                return true;
+            }
+
+            if (utcNow.TimeOfDay <= StartWorkAt.ToTimeSpan() || utcNow.TimeOfDay >= EndWorkAt.ToTimeSpan() &&
+                !FanSwitch1 && !FanSwitch2 && !WaterSwitch1 && !WaterSwitch2)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    public void SetTimer(TimeOnly updateStartAt, TimeOnly updateEndAt, DateTime utcNow)
+    {
+        Setting = SettingMode.Timer;
+        StartWorkAt = updateStartAt;
+        EndWorkAt = updateEndAt;
+        UpdatedAt = utcNow;
+    }
+
+    public void SetSensorValues(int updateFanOnAtTemp, int updateFanOffAtTemp, int updateWaterOffFromHumidity, DateTime utcNow)
+    {
+        Setting = SettingMode.Sensor;
+        FanSwitchOnAt = updateFanOnAtTemp;
+        FanSwitchOffAt = updateFanOffAtTemp;
+        WaterSwitchOffAt = updateWaterOffFromHumidity;
         UpdatedAt = utcNow;
     }
 }
