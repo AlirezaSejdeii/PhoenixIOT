@@ -56,9 +56,9 @@ public class UsersController(IUserService userService) : ControllerBase
     /// <summary>
     /// Get user information
     /// </summary>
-    [HttpGet]
+    [HttpGet("user-data")]
     [Authorize]
-    public ActionResult<UserDataDto> GetUserRoles()
+    public ActionResult<UserDataDto> GetUserInformation()
     {
         UserDataDto userDataDto = new(
             Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value),

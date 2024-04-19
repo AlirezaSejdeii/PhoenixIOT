@@ -35,6 +35,12 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> CreateDevice([FromBody] NewDevice device)
     {
+        Device? existDevice = await deviceService.GetDeviceByIdentifierAsync(device.Identifier);
+        if (existDevice == null)
+        {
+            return Ok(new ErrorModel("دستگاه از قبل وجود دارد"));
+        }
+
         await deviceService.CreateDevice(device.Identifier);
         return NoContent();
     }
