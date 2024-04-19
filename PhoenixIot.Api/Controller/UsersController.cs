@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
@@ -28,7 +29,7 @@ public class UsersController(IUserService userService) : ControllerBase
     /// Just admin can access.
     /// </summary>
     [HttpPost("new")]
-    [Authorize(RolesNames.Admin)]
+    [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> NewUser([FromBody] NewUser newUser)
     {
         bool isExist = await userService.CheckAnyUsernameAndPassword(newUser.Username, newUser.Password);
@@ -50,5 +51,20 @@ public class UsersController(IUserService userService) : ControllerBase
     {
         UserListDto result = await userService.GetAllUsersAsync(paging.PageNumber, paging.PageSize);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Get user information
+    /// </summary>
+    [HttpGet]
+    [Authorize]
+    public ActionResult<UserDataDto> GetUserRoles()
+    {
+        UserDataDto userDataDto = new(
+            Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value),
+            User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value,
+            User.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
+        );
+        return Ok(userDataDto);
     }
 }

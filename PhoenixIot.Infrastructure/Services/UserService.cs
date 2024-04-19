@@ -44,6 +44,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Username),
             }),
 
             Expires = DateTime.UtcNow.AddDays(jwtOptions.Value.ValidDays),
