@@ -36,7 +36,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     public async Task<IActionResult> CreateDevice([FromBody] NewDevice device)
     {
         Device? existDevice = await deviceService.GetDeviceByIdentifierAsync(device.Identifier);
-        if (existDevice == null)
+        if (existDevice != null)
         {
             return Ok(new ErrorModel("دستگاه از قبل وجود دارد"));
         }
