@@ -18,19 +18,22 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     /// </summary>
     [Authorize(Roles = RolesNames.Admin)]
     [HttpGet("all-devices")]
-    public async Task<ActionResult<DeviceDto>> GetAllDevices([FromQuery] PagingDto paging)
+    public async Task<ActionResult<DeviceDto>> GetAllDevices()
     {
-        return await deviceService.GetAllDevices(paging.PageNumber, paging.PageSize);
+        return await deviceService.GetAllDevices();
     }
 
     [HttpGet("user-devices")]
     [Authorize]
-    public async Task<ActionResult<DeviceDto>> GetUserDevices([FromQuery] PagingDto paging)
+    public async Task<ActionResult<DeviceDto>> GetUserDevices()
     {
         Guid userId = Guid.Parse(User.Identity!.Name!);
-        return await deviceService.GetUserDevices(userId, paging.PageNumber, paging.PageSize);
+        return await deviceService.GetUserDevices(userId);
     }
 
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
     [HttpPost("create")]
     [Authorize(Roles = RolesNames.Admin)]
     public async Task<IActionResult> CreateDevice([FromBody] NewDevice device)

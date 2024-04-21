@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
+using PhoenixIot.Core.Entities;
 using PhoenixIot.Models;
 
 namespace PhoenixIot.Controller;
@@ -39,17 +40,95 @@ public class UsersController(IUserService userService) : ControllerBase
         }
 
         await userService.NewUser(newUser.Username, newUser.Password);
-        return Ok();
+        return NoContent();
     }
 
     /// <summary>
     /// Just admin can access.
     /// </summary>
+    [HttpDelete("remove/{id:guid}")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> RemoveUser([FromRoute] Guid id)
+    {
+        User? user = await userService.GetUserById(id);
+        if (user == null)
+        {
+            return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
+        }
+
+        await userService.DeleteUser(user);
+        return NoContent();
+    }
+
+
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
+    [HttpPut("update/{id:guid}")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> RemoveUser([FromRoute] Guid id, [FromBody] NewUser userInfo)
+    {
+        User? user = await userService.GetUserById(id);
+        if (user == null)
+        {
+            return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
+        }
+
+        await userService.UpdateUsernamePassword(user, userInfo.Username, userInfo.Password);
+        return NoContent();
+    }
+    
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
+    [HttpPost("assign-role")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> AssignRole([FromBody] AssignRoleDto userInfo)
+    {
+        User? user = await userService.GetUserById(userInfo.UserId);
+        if (user == null)
+        {
+            return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
+        }
+
+        if (!userInfo.Roles.Contains(RolesNames.Admin))
+        {
+            return Ok(new ErrorModel("نقشی با این مشخصات یافت نشد"));
+
+        }
+        await userService.AddRole(user, userInfo.Roles);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
+    [HttpPost("remove-role")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> RemoveRole([FromBody] AssignRoleDto userInfo)
+    {
+        User? user = await userService.GetUserById(userInfo.UserId);
+        if (user == null)
+        {
+            return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
+        }
+
+        if (!userInfo.Roles.Contains(RolesNames.Admin))
+        {
+            return Ok(new ErrorModel("نقشی با این مشخصات یافت نشد"));
+
+        }
+        await userService.RemoveRole(user, userInfo.Roles);
+        return NoContent();
+    }
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
     [HttpGet("get-all-users")]
     [Authorize(Roles = RolesNames.Admin)]
-    public async Task<ActionResult<UserListDto>> GetAllUsers([FromQuery] PagingDto paging)
+    public async Task<ActionResult<UserListDto>> GetAllUsers()
     {
-        UserListDto result = await userService.GetAllUsersAsync(paging.PageNumber, paging.PageSize);
+        UserListDto result = await userService.GetAllUsersAsync();
         return Ok(result);
     }
 

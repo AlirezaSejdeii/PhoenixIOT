@@ -1,3 +1,3 @@
 namespace PhoenixIot.Models;
 
-public record NewUser(string Username,string Password);
+public record NewUser(string Username, string Password);

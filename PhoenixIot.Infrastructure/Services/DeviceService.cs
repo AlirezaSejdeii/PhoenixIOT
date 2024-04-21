@@ -14,16 +14,16 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<DeviceDto> GetAllDevices(int page = 1, int size = 10)
+    public async Task<DeviceDto> GetAllDevices()
     {
         IQueryable<Device> devices = dbContext.Devices.AsQueryable();
-        return await GetResult(devices, page, size);
+        return await GetResult(devices);
     }
 
-    public async Task<DeviceDto> GetUserDevices(Guid userId, int page = 1, int size = 10)
+    public async Task<DeviceDto> GetUserDevices(Guid userId)
     {
         IQueryable<Device> devices = dbContext.Devices.Where(x => x.User != null && x.User.Id == userId).AsQueryable();
-        return await GetResult(devices, page, size);
+        return await GetResult(devices);
     }
 
     public async Task<RelayStatus?> GetRelayStatus(string identifier)
@@ -122,7 +122,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
     }
 
 
-    private async Task<DeviceDto> GetResult(IQueryable<Device> devices, int page = 1, int size = 10)
+    private async Task<DeviceDto> GetResult(IQueryable<Device> devices)
     {
         int total = devices.Count();
         List<DeviceItemDto> items = await devices.Select(x => new DeviceItemDto(
@@ -162,8 +162,6 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
                 x.Val19,
                 x.Val20,
                 x.IsSync(DateTime.UtcNow)))
-            .Skip((page - 1) * size)
-            .Take(size)
             .ToListAsync();
         return new DeviceDto(items, total);
     }

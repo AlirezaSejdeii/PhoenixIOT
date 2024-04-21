@@ -23,4 +23,11 @@ public class User : BaseEntity
         Devices.Add(device);
         UpdatedAt = utcNow;
     }
+
+    public void UpdateUsernameAndPassword(string newUsername, string newPassword, DateTime utcNow)
+    {
+        Username = newUsername;
+        Password = newPassword;
+        UpdatedAt = utcNow;
+    }
 }

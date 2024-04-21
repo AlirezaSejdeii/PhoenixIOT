@@ -99,13 +99,38 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<UserListDto> GetAllUsersAsync(int page = 1, int size = 10)
+    public async Task<UserListDto> GetAllUsersAsync()
     {
         IQueryable<UserInfoDto> infoList = dbContext.Users.Select(x => new UserInfoDto(x.Id, x.Username, x.CreatedAt));
         int total = infoList.Count();
-        List<UserInfoDto> items = await infoList.Skip((page - 1) * size)
-            .Take(size)
-            .ToListAsync();
+        List<UserInfoDto> items = await infoList.ToListAsync();
         return new UserListDto(items, total);
+    }
+
+    public async Task DeleteUser(User user)
+    {
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateUsernamePassword(User user, string newUsername, string newPassword)
+    {
+        user.UpdateUsernameAndPassword(newUsername, newPassword, DateTime.UtcNow);
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddRole(User user, List<string> userInfoRoles)
+    {
+        List<Role> roles = dbContext.Roles.ToList();
+        roles.ForEach(role => user.Roles.Add(role));
+        await dbContext.SaveChangesAsync();
+    }
+    
+    public async Task RemoveRole(User user, List<string> userInfoRoles)
+    {
+        List<Role> roles = dbContext.Roles.ToList();
+        roles.ForEach(role => user.Roles.Remove(role));
+        await dbContext.SaveChangesAsync();
     }
 }
