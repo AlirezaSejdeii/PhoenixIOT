@@ -11,6 +11,7 @@ public interface IUserService
     Task<User?> GetUserByUsernameAndPasswordAsync(string loginDtoUsername, string loginDtoPassword);
     Task<bool> IsUserInRole(Guid userId, string roleTitle);
     Task<bool> CheckAnyUsernameAndPassword(string newUserUsername, string newUserPassword);
+    Task<bool> CheckUsernameExist(string newUserUsername);
     Task NewUser(string newUserUsername, string newUserPassword);
     Task<User?> GetUserById(Guid assignInfoUserId);
     Task AssignDeviceToUserAsync(Device device, User user);

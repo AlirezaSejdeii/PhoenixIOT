@@ -80,6 +80,11 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         return await dbContext.Users.AnyAsync(x => x.Username == newUserUsername && x.Password == newUserPassword);
     }
 
+    public async Task<bool> CheckUsernameExist(string newUserUsername)
+    {
+        return await dbContext.Users.AnyAsync(x => x.Username == newUserUsername);
+    }
+
     public async Task NewUser(string newUserUsername, string newUserPassword)
     {
         User user = new(newUserUsername, newUserPassword, DateTime.UtcNow);
