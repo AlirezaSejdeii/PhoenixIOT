@@ -5,9 +5,15 @@ namespace PhoenixIot.Application.Services;
 
 public interface IDeviceService
 {
-    Task CreateDevice(string identifier);
-    Task<DeviceDto> GetAllDevices();
-    Task<DeviceDto> GetUserDevices(Guid userId);
+    Task CreateDevice(
+        string identifier,
+        string switch1Name,
+        string switch2Name,
+        string switch3Name,
+        string switch4Name);
+
+    DeviceDto GetAllDevices();
+    DeviceDto GetUserDevices(Guid userId);
     Task<RelayStatus?> GetRelayStatus(string identifier);
     Task<Device?> GetDeviceByIdentifierAsync(string identifier);
     Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device);
@@ -18,4 +24,13 @@ public interface IDeviceService
     Task UpdateDeviceRelays(RelayUpdate update, Device device);
     Task UpdateTimer(TimerUpdate update, Device device);
     Task UpdateSensor(SensorUpdate update, Device device);
+    Task<bool> IsDeviceBelongToUser(Guid deviceId, Guid userId);
+    Task<bool> IsDeviceExist(Guid deviceId);
+    DeviceItemDto GetDeviceInfoById(Guid deviceId);
+    Task UpdateDeviceSwitchName(
+        Device device, 
+        string switch1Name, 
+        string switch2Name, 
+        string switch3Name, 
+        string switch4Name);
 }

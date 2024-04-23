@@ -1,3 +1,3 @@
 namespace PhoenixIot.Models;
 
-public record UpdateDevice(string CurrentId,string NewIdentifier);
+public record UpdateDevice(Guid Id, string Switch1Name, string Switch2Name, string Switch3Name, string Switch4Name);

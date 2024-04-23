@@ -13,17 +13,29 @@ public class DeviceConfiguration : BaseConfiguration<Device>
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.Property(x => x.FanSwitch1)
-            .HasColumnName("fan_switch_1");
+        builder.Property(x => x.Switch1)
+            .HasColumnName("switch_1");
 
-        builder.Property(x => x.FanSwitch2)
-            .HasColumnName("fan_switch_2");
+        builder.Property(x => x.Switch2)
+            .HasColumnName("switch_2");
 
-        builder.Property(x => x.WaterSwitch1)
-            .HasColumnName("water_switch_1");
+        builder.Property(x => x.Switch3)
+            .HasColumnName("switch_3");
 
-        builder.Property(x => x.WaterSwitch2)
-            .HasColumnName("water_switch_2");
+        builder.Property(x => x.Switch4)
+            .HasColumnName("switch_4");
+
+        builder.Property(x => x.Switch1Name)
+            .HasColumnName("switch_1_name");
+
+        builder.Property(x => x.Switch2Name)
+            .HasColumnName("switch_2_name");
+
+        builder.Property(x => x.Switch3Name)
+            .HasColumnName("switch_3_name");
+
+        builder.Property(x => x.Switch4Name)
+            .HasColumnName("switch_4_name");
 
         builder.Property(x => x.Setting)
             .HasColumnName("setting");

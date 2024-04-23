@@ -1,12 +1,23 @@
+using System.Security.AccessControl;
 using PhoenixIot.Core.Enums;
 
 namespace PhoenixIot.Core.Entities;
 
 public class Device : BaseEntity
 {
-    public Device(string identifier, DateTime now)
+    public Device(
+        string identifier,
+        string switch1Name,
+        string switch2Name,
+        string switch3Name,
+        string switch4Name,
+        DateTime now)
     {
         Identifier = identifier;
+        Switch1Name = switch1Name;
+        Switch2Name = switch2Name;
+        Switch3Name = switch3Name;
+        Switch4Name = switch4Name;
         CreatedAt = now;
     }
 
@@ -15,10 +26,14 @@ public class Device : BaseEntity
     }
 
     public string Identifier { get; private set; }
-    public bool FanSwitch1 { get; private set; }
-    public bool FanSwitch2 { get; private set; }
-    public bool WaterSwitch1 { get; private set; }
-    public bool WaterSwitch2 { get; private set; }
+    public bool Switch1 { get; private set; }
+    public bool Switch2 { get; private set; }
+    public bool Switch3 { get; private set; }
+    public bool Switch4 { get; private set; }
+    public string Switch1Name { get; private set; }
+    public string Switch2Name { get; private set; }
+    public string Switch3Name { get; private set; }
+    public string Switch4Name { get; private set; }
 
     public SettingMode Setting { get; private set; }
 
@@ -122,10 +137,10 @@ public class Device : BaseEntity
     public void UpdateRelays(bool updateFan1, bool updateFan2, bool updateWater1, bool updateWater2, DateTime now)
     {
         Setting = SettingMode.Manual;
-        FanSwitch1 = updateFan1;
-        FanSwitch2 = updateFan2;
-        WaterSwitch1 = updateWater1;
-        WaterSwitch2 = updateWater2;
+        Switch1 = updateFan1;
+        Switch2 = updateFan2;
+        Switch3 = updateWater1;
+        Switch4 = updateWater2;
         UpdatedAt = now;
     }
 
@@ -151,24 +166,24 @@ public class Device : BaseEntity
         {
             if (decimal.Parse(Temperature!) >= FanSwitchOnAt && decimal.Parse(Temperature!) <= FanSwitchOffAt)
             {
-                FanSwitch1 = true;
-                FanSwitch2 = true;
+                Switch1 = true;
+                Switch2 = true;
             }
             else
             {
-                FanSwitch1 = false;
-                FanSwitch2 = false;
+                Switch1 = false;
+                Switch2 = false;
             }
 
             if (decimal.Parse(Humidity!) <= WaterSwitchOffAt)
             {
-                WaterSwitch1 = true;
-                WaterSwitch2 = true;
+                Switch3 = true;
+                Switch4 = true;
             }
             else
             {
-                WaterSwitch1 = false;
-                WaterSwitch2 = false;
+                Switch3 = false;
+                Switch4 = false;
             }
         }
 
@@ -176,17 +191,17 @@ public class Device : BaseEntity
         {
             if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan())
             {
-                FanSwitch1 = true;
-                FanSwitch2 = true;
-                WaterSwitch1 = true;
-                WaterSwitch2 = true;
+                Switch1 = true;
+                Switch2 = true;
+                Switch3 = true;
+                Switch4 = true;
             }
             else
             {
-                FanSwitch1 = false;
-                FanSwitch2 = false;
-                WaterSwitch1 = false;
-                WaterSwitch2 = false;
+                Switch1 = false;
+                Switch2 = false;
+                Switch3 = false;
+                Switch4 = false;
             }
         }
     }
@@ -202,12 +217,12 @@ public class Device : BaseEntity
         {
             bool isFanSwitchSync = (decimal.Parse(Temperature!) >= FanSwitchOnAt &&
                                     decimal.Parse(Temperature!) <= FanSwitchOffAt &&
-                                    FanSwitch1 && FanSwitch2) ||
+                                    Switch1 && Switch2) ||
                                    (decimal.Parse(Temperature!) <= FanSwitchOnAt &&
                                     decimal.Parse(Temperature!) >= FanSwitchOffAt &&
-                                    !FanSwitch1 && !FanSwitch2);
-            bool isWaterSwitchSync = (decimal.Parse(Humidity!) <= WaterSwitchOffAt && WaterSwitch1 && WaterSwitch2) ||
-                                     (decimal.Parse(Humidity!) >= WaterSwitchOffAt && !WaterSwitch1 && !WaterSwitch2);
+                                    !Switch1 && !Switch2);
+            bool isWaterSwitchSync = (decimal.Parse(Humidity!) <= WaterSwitchOffAt && Switch3 && Switch4) ||
+                                     (decimal.Parse(Humidity!) >= WaterSwitchOffAt && !Switch3 && !Switch4);
 
             return isFanSwitchSync && isWaterSwitchSync;
         }
@@ -215,13 +230,13 @@ public class Device : BaseEntity
         if (Setting == SettingMode.Timer)
         {
             if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan() &&
-                FanSwitch1 && FanSwitch2 && WaterSwitch1 && WaterSwitch2)
+                Switch1 && Switch2 && Switch3 && Switch4)
             {
                 return true;
             }
 
             if (utcNow.TimeOfDay <= StartWorkAt.ToTimeSpan() || utcNow.TimeOfDay >= EndWorkAt.ToTimeSpan() &&
-                !FanSwitch1 && !FanSwitch2 && !WaterSwitch1 && !WaterSwitch2)
+                !Switch1 && !Switch2 && !Switch3 && !Switch4)
             {
                 return true;
             }
@@ -247,6 +262,20 @@ public class Device : BaseEntity
         FanSwitchOnAt = updateFanOnAtTemp;
         FanSwitchOffAt = updateFanOffAtTemp;
         WaterSwitchOffAt = updateWaterOffFromHumidity;
+        UpdatedAt = utcNow;
+    }
+
+    public void UpdatedSwitchName(
+        string switch1Name, 
+        string switch2Name, 
+        string switch3Name, 
+        string switch4Name,
+        DateTime utcNow)
+    {
+        Switch1Name = switch1Name;
+        Switch2Name = switch2Name;
+        Switch3Name = switch3Name;
+        Switch4Name = switch4Name;
         UpdatedAt = utcNow;
     }
 }

@@ -1,9 +1,9 @@
-using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
 using PhoenixIot.Core.Entities;
+using PhoenixIot.Extentions;
 using PhoenixIot.Models;
 
 namespace PhoenixIot.Controller;
@@ -18,17 +18,38 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     /// </summary>
     [Authorize(Roles = RolesNames.Admin)]
     [HttpGet("all-devices")]
-    public async Task<ActionResult<DeviceDto>> GetAllDevices()
+    public ActionResult<DeviceDto> GetAllDevices()
     {
-        return await deviceService.GetAllDevices();
+        return deviceService.GetAllDevices();
     }
 
     [HttpGet("user-devices")]
     [Authorize]
-    public async Task<ActionResult<DeviceDto>> GetUserDevices()
+    public ActionResult<DeviceDto> GetUserDevices()
     {
         Guid userId = Guid.Parse(User.Identity!.Name!);
-        return await deviceService.GetUserDevices(userId);
+        return deviceService.GetUserDevices(userId);
+    }
+
+    [HttpGet("get-device")]
+    [Authorize]
+    public async Task<ActionResult<DeviceDto>> GetDeviceInfo([FromQuery] Guid deviceId)
+    {
+        Guid userId = Guid.Parse(User.Identity!.Name!);
+        if (!await deviceService.IsDeviceExist(deviceId))
+        {
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+        }
+
+        if (!User.Claims.IsAdmin())
+        {
+            if (!await deviceService.IsDeviceBelongToUser(deviceId, userId))
+            {
+                return Ok(new ErrorModel("دستگاه متعلق به شما نیست"));
+            }
+        }
+
+        return Ok(deviceService.GetDeviceInfoById(deviceId));
     }
 
     /// <summary>
@@ -44,7 +65,12 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             return Ok(new ErrorModel("دستگاه از قبل وجود دارد"));
         }
 
-        await deviceService.CreateDevice(device.Identifier);
+        await deviceService.CreateDevice(
+            device.Identifier,
+            device.Switch1Name,
+            device.Switch2Name,
+            device.Switch3Name,
+            device.Switch4Name);
         return NoContent();
     }
 
@@ -53,19 +79,41 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     /// </summary>
     [HttpPut("update-identifier")]
     [Authorize(Roles = RolesNames.Admin)]
-    public async Task<IActionResult> UpdateIdentifier([FromBody] UpdateDevice updateDevice)
+    public async Task<IActionResult> UpdateIdentifier([FromBody] UpdateIdentifier updateIdentifier)
     {
         logger.LogInformation("Update device identifier requested for device with CurrentId: {CurrentId}",
-            updateDevice.CurrentId);
+            updateIdentifier.CurrentId);
         logger.LogInformation("Trying to find device by identifier");
-        Device? device = await deviceService.GetDeviceByIdentifierAsync(updateDevice.CurrentId);
+        Device? device = await deviceService.GetDeviceByIdentifierAsync(updateIdentifier.CurrentId);
         if (device == null)
         {
             logger.LogInformation("Failed to find device");
             return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
-        await deviceService.UpdateIdentifier(device, updateDevice.NewIdentifier);
+        await deviceService.UpdateIdentifier(device, updateIdentifier.NewIdentifier);
+        return NoContent();
+    }
+    
+    /// <summary>
+    /// Just admin can access.
+    /// </summary>
+    [HttpPut("update-device")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<IActionResult> UpdateIdentifier([FromBody] UpdateDevice updateDevice)
+    {
+        Device? device = await deviceService.GetDeviceById(updateDevice.Id);
+        if (device == null)
+        {
+            return Ok(new ErrorModel("دستگاه یافت نشد"));
+        }
+
+        await deviceService.UpdateDeviceSwitchName(
+            device,
+            updateDevice.Switch1Name,
+            updateDevice.Switch2Name,
+            updateDevice.Switch3Name,
+            updateDevice.Switch4Name);
         return NoContent();
     }
 
@@ -85,13 +133,16 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
-        logger.LogInformation("Check is device belong to user");
-        Guid userId = Guid.Parse(User.Identity!.Name!);
-        if (!device.IsBelongToUser(userId))
+        if (!User.Claims.IsAdmin())
         {
-            logger.LogInformation("Device is not belong to user");
+            logger.LogInformation("Check is device belong to user");
+            Guid userId = Guid.Parse(User.Identity!.Name!);
+            if (!device.IsBelongToUser(userId))
+            {
+                logger.LogInformation("Device is not belong to user");
 
-            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+                return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+            }
         }
 
         logger.LogInformation("Updating device");
@@ -115,13 +166,16 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
-        logger.LogInformation("Check is device belong to user");
-        Guid userId = Guid.Parse(User.Identity!.Name!);
-        if (!device.IsBelongToUser(userId))
+        if (!User.Claims.IsAdmin())
         {
-            logger.LogInformation("Device is not belong to user");
+            logger.LogInformation("Check is device belong to user");
+            Guid userId = Guid.Parse(User.Identity!.Name!);
+            if (!device.IsBelongToUser(userId))
+            {
+                logger.LogInformation("Device is not belong to user");
 
-            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+                return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+            }
         }
 
         logger.LogInformation("Updating device");
@@ -146,13 +200,16 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
-        logger.LogInformation("Check is device belong to user");
-        Guid userId = Guid.Parse(User.Identity!.Name!);
-        if (!device.IsBelongToUser(userId))
+        if (!User.Claims.IsAdmin())
         {
-            logger.LogInformation("Device is not belong to user");
+            logger.LogInformation("Check is device belong to user");
+            Guid userId = Guid.Parse(User.Identity!.Name!);
+            if (!device.IsBelongToUser(userId))
+            {
+                logger.LogInformation("Device is not belong to user");
 
-            return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+                return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+            }
         }
 
         logger.LogInformation("Updating device");
