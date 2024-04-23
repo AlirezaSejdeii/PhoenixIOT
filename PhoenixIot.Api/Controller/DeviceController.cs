@@ -28,6 +28,12 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     public ActionResult<DeviceDto> GetUserDevices()
     {
         Guid userId = Guid.Parse(User.Identity!.Name!);
+
+        if (!userService.IsUserActive(userId))
+        {
+            return Ok(new ErrorModel("کاربر فعال نیست"));
+        }
+
         return deviceService.GetUserDevices(userId);
     }
 
@@ -46,6 +52,11 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             if (!await deviceService.IsDeviceBelongToUser(deviceId, userId))
             {
                 return Ok(new ErrorModel("دستگاه متعلق به شما نیست"));
+            }
+
+            if (!userService.IsUserActive(userId))
+            {
+                return Ok(new ErrorModel("کاربر فعال نیست"));
             }
         }
 
@@ -94,7 +105,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         await deviceService.UpdateIdentifier(device, updateIdentifier.NewIdentifier);
         return NoContent();
     }
-    
+
     /// <summary>
     /// Just admin can access.
     /// </summary>
@@ -143,6 +154,11 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
                 return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
             }
+
+            if (!userService.IsUserActive(userId))
+            {
+                return Ok(new ErrorModel("کاربر فعال نیست"));
+            }
         }
 
         logger.LogInformation("Updating device");
@@ -175,6 +191,11 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
                 logger.LogInformation("Device is not belong to user");
 
                 return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+            }
+
+            if (!userService.IsUserActive(userId))
+            {
+                return Ok(new ErrorModel("کاربر فعال نیست"));
             }
         }
 
@@ -209,6 +230,11 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
                 logger.LogInformation("Device is not belong to user");
 
                 return Ok(new ErrorModel("دستگاه مطعلق به شما نیست"));
+            }
+
+            if (!userService.IsUserActive(userId))
+            {
+                return Ok(new ErrorModel("کاربر فعال نیست"));
             }
         }
 

@@ -120,6 +120,11 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         await dbContext.SaveChangesAsync();
     }
 
+    public bool IsUserActive(Guid userId)
+    {
+        return dbContext.Users.Where(x => x.Id == userId).Select(x => x.IsActive).FirstOrDefault();
+    }
+
     public async Task DeleteUser(User user)
     {
         dbContext.Users.Remove(user);

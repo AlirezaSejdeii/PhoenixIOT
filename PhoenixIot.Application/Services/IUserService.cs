@@ -21,4 +21,5 @@ public interface IUserService
     Task AddRole(User user, List<string> userInfoRoles);
     Task RemoveRole(User user, List<string> userInfoRoles);
     Task ToggleActivity(User user);
+    bool IsUserActive(Guid userId);
 }
