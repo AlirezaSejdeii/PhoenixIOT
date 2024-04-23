@@ -106,10 +106,18 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
 
     public async Task<UserListDto> GetAllUsersAsync()
     {
-        IQueryable<UserInfoDto> infoList = dbContext.Users.Select(x => new UserInfoDto(x.Id, x.Username, x.CreatedAt));
+        IQueryable<UserInfoDto> infoList =
+            dbContext.Users.Select(x => new UserInfoDto(x.Id, x.Username, x.IsActive, x.CreatedAt));
         int total = infoList.Count();
         List<UserInfoDto> items = await infoList.ToListAsync();
         return new UserListDto(items, total);
+    }
+    
+    public async Task ToggleActivity(User user)
+    {
+        user.ToggleActive(DateTime.UtcNow);
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteUser(User user)
@@ -131,7 +139,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         roles.ForEach(role => user.Roles.Add(role));
         await dbContext.SaveChangesAsync();
     }
-    
+
     public async Task RemoveRole(User user, List<string> userInfoRoles)
     {
         List<Role> roles = dbContext.Roles.ToList();

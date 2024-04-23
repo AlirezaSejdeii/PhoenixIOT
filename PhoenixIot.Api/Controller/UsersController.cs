@@ -152,4 +152,21 @@ public class UsersController(IUserService userService) : ControllerBase
         );
         return Ok(userDataDto);
     }
+
+    /// <summary>
+    /// Get user information
+    /// </summary>
+    [HttpPatch("toggle-user-is-active/{id:guid}")]
+    [Authorize(Roles = RolesNames.Admin)]
+    public async Task<ActionResult<UserDataDto>> ToggleUserActive(Guid id)
+    {
+        User? user = await userService.GetUserById(id);
+        if (user == null)
+        {
+            return Ok(new ErrorModel("کاربر یافت نشد"));
+        }
+
+        await userService.ToggleActivity(user);
+        return NoContent();
+    }
 }

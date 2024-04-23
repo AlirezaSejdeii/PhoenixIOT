@@ -6,6 +6,7 @@ public class User : BaseEntity
     {
         Username = username;
         Password = password;
+        IsActive = true;
         CreatedAt = now;
     }
 
@@ -15,6 +16,7 @@ public class User : BaseEntity
 
     public string Username { get; set; }
     public string Password { get; set; }
+    public bool IsActive { get; set; }
     public ICollection<Device> Devices { get; set; } = new List<Device>();
     public ICollection<Role> Roles { get; set; } = new List<Role>();
 
@@ -28,6 +30,12 @@ public class User : BaseEntity
     {
         Username = newUsername;
         Password = newPassword;
+        UpdatedAt = utcNow;
+    }
+
+    public void ToggleActive(DateTime utcNow)
+    {
+        IsActive = !IsActive;
         UpdatedAt = utcNow;
     }
 }

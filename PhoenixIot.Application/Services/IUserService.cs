@@ -20,4 +20,5 @@ public interface IUserService
     Task UpdateUsernamePassword(User user, string newUsername, string newPassword);
     Task AddRole(User user, List<string> userInfoRoles);
     Task RemoveRole(User user, List<string> userInfoRoles);
+    Task ToggleActivity(User user);
 }

@@ -17,5 +17,8 @@ public class UserConfiguration : BaseConfiguration<User>
             .HasMaxLength(150)
             .HasColumnName("password")
             .IsRequired();
+
+        builder.Property(x => x.IsActive)
+            .HasColumnName("is_active");
     }
 }
