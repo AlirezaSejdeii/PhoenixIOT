@@ -37,9 +37,9 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         return deviceService.GetUserDevices(userId);
     }
 
-    [HttpGet("get-device")]
+    [HttpGet("get-device/{deviceId:guid}")]
     [Authorize]
-    public async Task<ActionResult<DeviceDto>> GetDeviceInfo([FromQuery] Guid deviceId)
+    public async Task<ActionResult<DeviceDto>> GetDeviceInfo([FromRoute] Guid deviceId)
     {
         Guid userId = Guid.Parse(User.Identity!.Name!);
         if (!await deviceService.IsDeviceExist(deviceId))
@@ -271,7 +271,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     /// </summary>
     [HttpDelete("delete-device/{id:guid}")]
     [Authorize(Roles = RolesNames.Admin)]
-    public async Task<IActionResult> DeleteDevice(Guid id)
+    public async Task<IActionResult> DeleteDevice([FromRoute] Guid id)
     {
         Device? device = await deviceService.GetDeviceById(id);
         if (device is null)
