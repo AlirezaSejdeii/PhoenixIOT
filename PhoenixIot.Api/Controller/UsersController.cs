@@ -74,7 +74,7 @@ public class UsersController(IUserService userService) : ControllerBase
             return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
         }
 
-        if (await userService.CheckUsernameExist(userInfo.Username))
+        if (user.Username != userInfo.Username && await userService.CheckUsernameExist(userInfo.Username))
         {
             return Ok(new ErrorModel("نام کاربری از قبل ساخته شده است"));
         }
