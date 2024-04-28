@@ -119,12 +119,19 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             return Ok(new ErrorModel("دستگاه یافت نشد"));
         }
 
+        if (device.Identifier != updateDevice.Identifier &&
+            await deviceService.AnyDeviceWithIdentifier(updateDevice.Identifier))
+        {
+            return Ok(new ErrorModel("شناسه تکراری است"));
+        }
+
         await deviceService.UpdateDeviceSwitchName(
             device,
             updateDevice.Switch1Name,
             updateDevice.Switch2Name,
             updateDevice.Switch3Name,
-            updateDevice.Switch4Name);
+            updateDevice.Switch4Name,
+            updateDevice.Identifier);
         return NoContent();
     }
 

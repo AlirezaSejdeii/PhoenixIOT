@@ -64,6 +64,11 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         return dbContext.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Identifier == identifier);
     }
 
+    public async Task<bool> AnyDeviceWithIdentifier(string identifier)
+    {
+        return await dbContext.Devices.AnyAsync(x => x.Identifier == identifier);
+    }
+
     public async Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device)
     {
         device.UpdateVariables(
@@ -123,7 +128,8 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         string switch1Name,
         string switch2Name,
         string switch3Name,
-        string switch4Name)
+        string switch4Name,
+        string identifier)
     {
         device.UpdatedSwitchName(
             switch1Name,
@@ -131,6 +137,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             switch3Name,
             switch4Name,
             DateTime.UtcNow);
+        device.SetIdentifier(identifier,DateTime.UtcNow);
         dbContext.Update(device);
         await dbContext.SaveChangesAsync();
     }

@@ -16,6 +16,7 @@ public interface IDeviceService
     DeviceDto GetUserDevices(Guid userId);
     Task<RelayStatus?> GetRelayStatus(string identifier);
     Task<Device?> GetDeviceByIdentifierAsync(string identifier);
+    Task<bool> AnyDeviceWithIdentifier(string identifier);
     Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device);
     Task UpdateIdentifier(Device device, string updateDeviceNewIdentifier);
     Task<Device?> GetDeviceById(Guid deviceId);
@@ -27,10 +28,12 @@ public interface IDeviceService
     Task<bool> IsDeviceBelongToUser(Guid deviceId, Guid userId);
     Task<bool> IsDeviceExist(Guid deviceId);
     DeviceItemDto GetDeviceInfoById(Guid deviceId);
+
     Task UpdateDeviceSwitchName(
-        Device device, 
-        string switch1Name, 
-        string switch2Name, 
-        string switch3Name, 
-        string switch4Name);
+        Device device,
+        string switch1Name,
+        string switch2Name,
+        string switch3Name,
+        string switch4Name,
+        string identifier);
 }
