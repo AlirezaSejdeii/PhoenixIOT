@@ -176,7 +176,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         return new DeviceDto(items, total);
     }
 
-    private DeviceItemDto MapDevice(Device device)
+    public static DeviceItemDto MapDevice(Device device)
     {
         return new DeviceItemDto(
             device.Id,

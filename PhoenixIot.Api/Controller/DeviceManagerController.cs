@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
 using PhoenixIot.Core.Entities;
+using PhoenixIot.Hubs;
 
 namespace PhoenixIot.Controller;
 
@@ -10,7 +11,10 @@ namespace PhoenixIot.Controller;
 /// </summary>
 [ApiController]
 [Route("device-manager")]
-public class DeviceManagerController(IDeviceService deviceService, ILogger<DeviceManagerController> logger)
+public class DeviceManagerController(
+    IDeviceService deviceService,
+    ILogger<DeviceManagerController> logger,
+    IDeviceUpdateNotificationService notificationService)
     : ControllerBase
 {
     /// <summary>
@@ -50,6 +54,7 @@ public class DeviceManagerController(IDeviceService deviceService, ILogger<Devic
         }
 
         await deviceService.UpdateVariablesAsync(deviceDto, device);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
@@ -68,6 +73,7 @@ public class DeviceManagerController(IDeviceService deviceService, ILogger<Devic
         }
 
         await deviceService.UpdateLastSync(device);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 }

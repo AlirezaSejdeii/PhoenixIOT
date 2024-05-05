@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PhoenixIot.Application.Models;
+using PhoenixIot.Hubs;
 using PhoenixIot.Infrastructure;
 
 namespace PhoenixIot.Controller;

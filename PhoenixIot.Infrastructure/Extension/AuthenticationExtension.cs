@@ -1,13 +1,16 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
 namespace PhoenixIot.Infrastructure.Extension;
 
 public static class AuthenticationExtension
 {
-    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services,string secret,string encryption)
+    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, string secret,
+        string encryption)
     {
         byte[] secretKey = Encoding.ASCII.GetBytes(secret);
         byte[] encryptionKey = Encoding.ASCII.GetBytes(encryption);
@@ -32,7 +35,32 @@ public static class AuthenticationExtension
             options.RequireHttpsMetadata = false;
             options.SaveToken = true;
             options.TokenValidationParameters = tokenValidationParameters;
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = OnMessageReceived()
+            };
         });
         return services;
+    }
+
+    private static Func<MessageReceivedContext, Task> OnMessageReceived()
+    {
+        return context =>
+        {
+            PathString path = context.HttpContext.Request.Path;
+
+            if (path.StartsWithSegments("/hub/update-device-notification"))
+            {
+                StringValues accessToken = context.Request.Query["access_token"];
+
+                if (!string.IsNullOrWhiteSpace(accessToken))
+                {
+                    context.Token = accessToken;
+                }
+            }
+
+            return Task.CompletedTask;
+        };
     }
 }

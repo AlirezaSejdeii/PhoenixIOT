@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PhoenixIot.Application;
 using PhoenixIot.Application.Services;
+using PhoenixIot.Hubs;
 using PhoenixIot.Infrastructure;
+using PhoenixIot.Infrastructure.Hubs;
 using PhoenixIot.Infrastructure.Seeder;
 using PhoenixIot.Infrastructure.Services;
 using PhoenixIot.Middleware;
@@ -53,7 +55,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 app.UseSwagger();
@@ -70,6 +72,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 // app.UseHttpsRedirection();
 app.MapControllers();
+app.MapHub<UpdateDeviceHub>("/hub/update-device-notification");
 
 // Initialization
 var scope = app.Services.CreateScope();

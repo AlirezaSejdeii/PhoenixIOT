@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
+using PhoenixIot.Hubs;
 using PhoenixIot.Infrastructure.Extension;
+using PhoenixIot.Infrastructure.Hubs;
 using PhoenixIot.Infrastructure.Seeder;
 using PhoenixIot.Infrastructure.Services;
 
@@ -21,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IDeviceService, DeviceService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<ISeedUsers, SeedUsers>();
+        services.AddScoped<IDeviceUpdateNotificationService, DeviceUpdateNotificationService>();
         return services;
     }
 }
