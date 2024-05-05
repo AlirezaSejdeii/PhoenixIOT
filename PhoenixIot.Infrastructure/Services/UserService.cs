@@ -47,7 +47,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
             }),
 
-            Expires = DateTime.UtcNow.AddDays(jwtOptions.Value.ValidDays),
+            Expires = DateTime.Now.AddDays(jwtOptions.Value.ValidDays),
             SigningCredentials = signingCredentials,
             EncryptingCredentials = encryptingCredentials
         };
@@ -87,7 +87,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
 
     public async Task NewUser(string newUserUsername, string newUserPassword)
     {
-        User user = new(newUserUsername, newUserPassword, DateTime.UtcNow);
+        User user = new(newUserUsername, newUserPassword, DateTime.Now);
         await dbContext.AddAsync(user);
         await dbContext.SaveChangesAsync();
     }
@@ -99,7 +99,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
 
     public async Task AssignDeviceToUserAsync(Device device, User user)
     {
-        user.AssignNewDevice(device, DateTime.UtcNow);
+        user.AssignNewDevice(device, DateTime.Now);
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
     }
@@ -115,7 +115,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
     
     public async Task ToggleActivity(User user)
     {
-        user.ToggleActive(DateTime.UtcNow);
+        user.ToggleActive(DateTime.Now);
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
     }
@@ -133,7 +133,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
 
     public async Task UpdateUsernamePassword(User user, string newUsername, string newPassword)
     {
-        user.UpdateUsernameAndPassword(newUsername, newPassword, DateTime.UtcNow);
+        user.UpdateUsernameAndPassword(newUsername, newPassword, DateTime.Now);
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
     }

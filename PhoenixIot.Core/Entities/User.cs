@@ -20,22 +20,22 @@ public class User : BaseEntity
     public ICollection<Device> Devices { get; set; } = new List<Device>();
     public ICollection<Role> Roles { get; set; } = new List<Role>();
 
-    public void AssignNewDevice(Device device, DateTime utcNow)
+    public void AssignNewDevice(Device device, DateTime now)
     {
         Devices.Add(device);
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 
-    public void UpdateUsernameAndPassword(string newUsername, string newPassword, DateTime utcNow)
+    public void UpdateUsernameAndPassword(string newUsername, string newPassword, DateTime now)
     {
         Username = newUsername;
         Password = newPassword;
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 
-    public void ToggleActive(DateTime utcNow)
+    public void ToggleActive(DateTime now)
     {
         IsActive = !IsActive;
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 }

@@ -15,7 +15,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
         string switch3Name,
         string switch4Name)
     {
-        Device device = new(identifier, switch1Name, switch2Name, switch3Name, switch4Name, DateTime.UtcNow);
+        Device device = new(identifier, switch1Name, switch2Name, switch3Name, switch4Name, DateTime.Now);
         await dbContext.Devices.AddAsync(device);
         await dbContext.SaveChangesAsync();
     }
@@ -52,7 +52,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             return null;
         }
 
-        device.SetupDeviceRelays(DateTime.UtcNow);
+        device.SetupDeviceRelays(DateTime.Now);
         dbContext.Update(device);
         await dbContext.SaveChangesAsync();
 
@@ -94,21 +94,21 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             deviceDto.Val18,
             deviceDto.Val19,
             deviceDto.Val20,
-            DateTime.UtcNow);
+            DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateIdentifier(Device device, string newIdentifier)
     {
-        device.SetIdentifier(newIdentifier, DateTime.UtcNow);
+        device.SetIdentifier(newIdentifier, DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateDeviceRelays(RelayUpdate update, Device device)
     {
-        device.UpdateRelays(update.Fan1, update.Fan2, update.Water1, update.Water2, DateTime.UtcNow);
+        device.UpdateRelays(update.Fan1, update.Fan2, update.Water1, update.Water2, DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
@@ -136,8 +136,8 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             switch2Name,
             switch3Name,
             switch4Name,
-            DateTime.UtcNow);
-        device.SetIdentifier(identifier,DateTime.UtcNow);
+            DateTime.Now);
+        device.SetIdentifier(identifier, DateTime.Now);
         dbContext.Update(device);
         await dbContext.SaveChangesAsync();
     }
@@ -150,20 +150,26 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 
     public async Task UpdateLastSync(Device device)
     {
-        device.UpdateLastSync(DateTime.UtcNow);
+        device.UpdateLastSync(DateTime.Now);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateTimer(TimerUpdate update, Device device)
     {
-        device.SetTimer(TimeOnly.FromDateTime(update.StartAt), TimeOnly.FromDateTime(update.EndAt), DateTime.UtcNow);
+        TimeOnly startTime =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAt).Add(TimeSpan.FromMinutes(update.StartMinAt)));
+
+        TimeOnly endTime =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAt).Add(TimeSpan.FromMinutes(update.EndMinAt)));
+
+        device.SetTimer(startTime, endTime, DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateSensor(SensorUpdate update, Device device)
     {
-        device.SetSensorValues(update.FanOnAtTemp, update.FanOffAtTemp, update.WaterOffFromHumidity, DateTime.UtcNow);
+        device.SetSensorValues(update.FanOnAtTemp, update.FanOffAtTemp, update.WaterOffFromHumidity, DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
@@ -218,6 +224,6 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             device.Val18,
             device.Val19,
             device.Val20,
-            device.IsSync(DateTime.UtcNow));
+            device.IsSync(DateTime.Now));
     }
 }

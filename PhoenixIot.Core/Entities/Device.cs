@@ -154,13 +154,13 @@ public class Device : BaseEntity
         return false;
     }
 
-    public void UpdateLastSync(DateTime utcNow)
+    public void UpdateLastSync(DateTime now)
     {
-        LastSync = utcNow;
-        UpdatedAt = utcNow;
+        LastSync = now;
+        UpdatedAt = now;
     }
 
-    public void SetupDeviceRelays(DateTime utcNow)
+    public void SetupDeviceRelays(DateTime now)
     {
         if (Setting == SettingMode.Sensor)
         {
@@ -189,7 +189,7 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan())
+            if (now.TimeOfDay >= StartWorkAt.ToTimeSpan() && now.TimeOfDay <= EndWorkAt.ToTimeSpan())
             {
                 Switch1 = true;
                 Switch2 = true;
@@ -206,7 +206,7 @@ public class Device : BaseEntity
         }
     }
 
-    public bool IsSync(DateTime utcNow)
+    public bool IsSync(DateTime now)
     {
         if (Setting == SettingMode.Manual)
         {
@@ -229,13 +229,13 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            if (utcNow.TimeOfDay >= StartWorkAt.ToTimeSpan() && utcNow.TimeOfDay <= EndWorkAt.ToTimeSpan() &&
+            if (now.TimeOfDay >= StartWorkAt.ToTimeSpan() && now.TimeOfDay <= EndWorkAt.ToTimeSpan() &&
                 Switch1 && Switch2 && Switch3 && Switch4)
             {
                 return true;
             }
 
-            if (utcNow.TimeOfDay <= StartWorkAt.ToTimeSpan() || utcNow.TimeOfDay >= EndWorkAt.ToTimeSpan() &&
+            if (now.TimeOfDay <= StartWorkAt.ToTimeSpan() || now.TimeOfDay >= EndWorkAt.ToTimeSpan() &&
                 !Switch1 && !Switch2 && !Switch3 && !Switch4)
             {
                 return true;
@@ -247,22 +247,22 @@ public class Device : BaseEntity
         return false;
     }
 
-    public void SetTimer(TimeOnly updateStartAt, TimeOnly updateEndAt, DateTime utcNow)
+    public void SetTimer(TimeOnly updateStartAt, TimeOnly updateEndAt, DateTime now)
     {
         Setting = SettingMode.Timer;
         StartWorkAt = updateStartAt;
         EndWorkAt = updateEndAt;
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 
     public void SetSensorValues(int updateFanOnAtTemp, int updateFanOffAtTemp, int updateWaterOffFromHumidity,
-        DateTime utcNow)
+        DateTime now)
     {
         Setting = SettingMode.Sensor;
         FanSwitchOnAt = updateFanOnAtTemp;
         FanSwitchOffAt = updateFanOffAtTemp;
         WaterSwitchOffAt = updateWaterOffFromHumidity;
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 
     public void UpdatedSwitchName(
@@ -270,12 +270,12 @@ public class Device : BaseEntity
         string switch2Name, 
         string switch3Name, 
         string switch4Name,
-        DateTime utcNow)
+        DateTime now)
     {
         Switch1Name = switch1Name;
         Switch2Name = switch2Name;
         Switch3Name = switch3Name;
         Switch4Name = switch4Name;
-        UpdatedAt = utcNow;
+        UpdatedAt = now;
     }
 }
