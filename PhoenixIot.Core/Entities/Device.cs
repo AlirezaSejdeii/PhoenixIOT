@@ -189,7 +189,13 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            if (now.TimeOfDay >= StartWorkAt.ToTimeSpan() && now.TimeOfDay <= EndWorkAt.ToTimeSpan())
+            TimeSpan start = StartWorkAt.ToTimeSpan();
+            TimeSpan end = EndWorkAt.ToTimeSpan();
+            TimeSpan currentTime = now.TimeOfDay;
+
+            if (
+                (end < start && (currentTime >= start || currentTime <= end)) ||
+                (currentTime >= start && currentTime <= end))
             {
                 Switch1 = true;
                 Switch2 = true;
@@ -229,13 +235,19 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            if (now.TimeOfDay >= StartWorkAt.ToTimeSpan() && now.TimeOfDay <= EndWorkAt.ToTimeSpan() &&
+            TimeSpan start = StartWorkAt.ToTimeSpan();
+            TimeSpan end = EndWorkAt.ToTimeSpan();
+            TimeSpan currentTime = now.TimeOfDay;
+
+            if ((end < start && (currentTime >= start || currentTime <= end)) ||
+                (currentTime >= start && currentTime <= end) &&
                 Switch1 && Switch2 && Switch3 && Switch4)
             {
                 return true;
             }
 
-            if (now.TimeOfDay <= StartWorkAt.ToTimeSpan() || now.TimeOfDay >= EndWorkAt.ToTimeSpan() &&
+            if ((end < start && (currentTime <= start || currentTime >= end)) ||
+                currentTime <= start && currentTime >= end &&
                 !Switch1 && !Switch2 && !Switch3 && !Switch4)
             {
                 return true;
@@ -266,9 +278,9 @@ public class Device : BaseEntity
     }
 
     public void UpdatedSwitchName(
-        string switch1Name, 
-        string switch2Name, 
-        string switch3Name, 
+        string switch1Name,
+        string switch2Name,
+        string switch3Name,
         string switch4Name,
         DateTime now)
     {
