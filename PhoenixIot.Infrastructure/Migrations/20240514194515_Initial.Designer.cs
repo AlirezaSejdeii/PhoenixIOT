@@ -12,8 +12,8 @@ using PhoenixIot.Infrastructure;
 namespace PhoenixIot.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240418093818_AddOtherSettings")]
-    partial class AddOtherSettings
+    [Migration("20240514194515_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,15 +21,15 @@ namespace PhoenixIot.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("PhoenixIot.Core.Entities.Device", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id")
                         .HasColumnOrder(1);
 
@@ -38,16 +38,8 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<TimeOnly>("EndWorkAt")
-                        .HasColumnType("time")
+                        .HasColumnType("time(6)")
                         .HasColumnName("end_work_at");
-
-                    b.Property<bool>("FanSwitch1")
-                        .HasColumnType("bit")
-                        .HasColumnName("fan_switch_1");
-
-                    b.Property<bool>("FanSwitch2")
-                        .HasColumnType("bit")
-                        .HasColumnName("fan_switch_2");
 
                     b.Property<int>("FanSwitchOffAt")
                         .HasColumnType("int")
@@ -59,17 +51,17 @@ namespace PhoenixIot.Infrastructure.Migrations
 
                     b.Property<string>("Humidity")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("humidity");
 
                     b.Property<string>("Identifier")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("identifier");
 
                     b.Property<DateTime?>("LastSync")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("last_sync");
 
                     b.Property<int>("Setting")
@@ -77,12 +69,48 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnName("setting");
 
                     b.Property<TimeOnly>("StartWorkAt")
-                        .HasColumnType("time")
+                        .HasColumnType("time(6)")
                         .HasColumnName("start_work_at");
+
+                    b.Property<bool>("Switch1")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("switch_1");
+
+                    b.Property<string>("Switch1Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("switch_1_name");
+
+                    b.Property<bool>("Switch2")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("switch_2");
+
+                    b.Property<string>("Switch2Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("switch_2_name");
+
+                    b.Property<bool>("Switch3")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("switch_3");
+
+                    b.Property<string>("Switch3Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("switch_3_name");
+
+                    b.Property<bool>("Switch4")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("switch_4");
+
+                    b.Property<string>("Switch4Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("switch_4_name");
 
                     b.Property<string>("Temperature")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("temperature");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -90,115 +118,107 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Val1")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_1");
 
                     b.Property<string>("Val10")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_10");
 
                     b.Property<string>("Val11")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_11");
 
                     b.Property<string>("Val12")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_12");
 
                     b.Property<string>("Val13")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_13");
 
                     b.Property<string>("Val14")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_14");
 
                     b.Property<string>("Val15")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_15");
 
                     b.Property<string>("Val16")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_16");
 
                     b.Property<string>("Val17")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_17");
 
                     b.Property<string>("Val18")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_18");
 
                     b.Property<string>("Val19")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_19");
 
                     b.Property<string>("Val2")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_2");
 
                     b.Property<string>("Val20")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_20");
 
                     b.Property<string>("Val3")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_3");
 
                     b.Property<string>("Val4")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_4");
 
                     b.Property<string>("Val5")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_5");
 
                     b.Property<string>("Val6")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_6");
 
                     b.Property<string>("Val7")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_7");
 
                     b.Property<string>("Val8")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_8");
 
                     b.Property<string>("Val9")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("val_9");
-
-                    b.Property<bool>("WaterSwitch1")
-                        .HasColumnType("bit")
-                        .HasColumnName("water_switch_1");
-
-                    b.Property<bool>("WaterSwitch2")
-                        .HasColumnType("bit")
-                        .HasColumnName("water_switch_2");
 
                     b.Property<int>("WaterSwitchOffAt")
                         .HasColumnType("int")
@@ -215,7 +235,7 @@ namespace PhoenixIot.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id")
                         .HasColumnOrder(1);
 
@@ -226,13 +246,13 @@ namespace PhoenixIot.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("varchar(150)")
                         .HasColumnName("description");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -248,7 +268,7 @@ namespace PhoenixIot.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id")
                         .HasColumnOrder(1);
 
@@ -256,10 +276,14 @@ namespace PhoenixIot.Infrastructure.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("created_at");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_active");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("varchar(150)")
                         .HasColumnName("password");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -269,7 +293,7 @@ namespace PhoenixIot.Infrastructure.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("varchar(150)")
                         .HasColumnName("username");
 
                     b.HasKey("Id");
@@ -280,10 +304,10 @@ namespace PhoenixIot.Infrastructure.Migrations
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.Property<Guid>("RolesId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("UsersId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("RolesId", "UsersId");
 

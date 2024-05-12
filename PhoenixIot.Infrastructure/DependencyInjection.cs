@@ -15,7 +15,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(x => x.UseSqlServer(configuration["Database:ConnectionString"]));
+        services.AddDbContext<AppDbContext>(x => x.UseMySql(configuration["Database:ConnectionString"],ServerVersion.AutoDetect(configuration["Database:ConnectionString"])));
         services.AddCustomAuthentication(configuration["JwtConfig:Secret"]!, configuration["JwtConfig:EncryptionKey"]!);
         // options
         services.Configure<JwtConfigDto>(configuration.GetSection("JwtConfig"));
