@@ -12,6 +12,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "18"
+
+      - name: Install Liara CLI
+        run: npm i -g @liara/cli@5
+          
       - name: update-liara
         env:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
