@@ -20,6 +20,6 @@ jobs:
         env:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
         run: |
-          echo $LIARA_TOKEN 
+          echo "$LIARA_TOKEN"
           npm i -g @liara/cli@5
           liara deploy --app="phoenix" --api-token="$LIARA_TOKEN" --no-app-logs
