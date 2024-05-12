@@ -1,6 +1,7 @@
 #include <DHT.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
 #include <iostream>
 #include <cstdlib>
@@ -20,7 +21,8 @@ const int relay_pin4 = 14;
 char ssid[] = "Mr.Me";
 char pass[] = "123456789";
 char identifier[] = "test_devide_id_1234";
-char serverUrl[] = "http://5.201.152.69:5264";
+// char serverUrl[] = "http://5.201.152.69:5264";
+char serverUrl[] = "https://phoenix.liara.run";
 
 char val1[] = "val1[]";
 char val2[] = "val2[]";
@@ -121,18 +123,20 @@ void loop() {
   Serial.println("°C ");
 
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
+    WiFiClientSecure client;
     HTTPClient http;
+    client.setInsecure();
 
     http.begin(client, String(serverUrl) + "/device-manager/update-variables/" + String(identifier));
     http.addHeader("Content-Type", "application/json");
+    http.addHeader("access-control-allow-origin", String(serverUrl));
 
     StaticJsonDocument<22> doc;
     doc["temperature"] = String(temperature);
     doc["humidity"] = String(humidity);
     char jsonBuffer[100];
 
-    
+
     //اسم هر متغیر را با مقدار دلخواه پر کنید تا در صفحه با همان نام نشان داده شود
 
     sprintf(jsonBuffer, "{\"name\":\"temp\",\"value\":\"%s\",\"max\":\"20\",\"min\":\"0\"}", val1);
