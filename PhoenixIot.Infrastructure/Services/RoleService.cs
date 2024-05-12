@@ -17,7 +17,7 @@ public class RoleService(AppDbContext dbContext) : IRoleService
 
     public async Task TryAddUserToRole(User adminUser, Role adminRole)
     {
-        if (adminUser.Roles.Any(x => x.Id != adminRole.Id))
+        if (!adminUser.Roles.Any(x => x.Id == adminRole.Id))
         {
             adminUser.Roles.Add(adminRole);
             await dbContext.SaveChangesAsync();
