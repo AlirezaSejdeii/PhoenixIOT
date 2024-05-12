@@ -76,6 +76,8 @@ app.MapHub<UpdateDeviceHub>("/hub/update-device-notification");
 
 // Initialization
 var scope = app.Services.CreateScope();
+AppDbContext dbContext=scope.ServiceProvider.GetRequiredService<AppDbContext>();
+dbContext.Database.EnsureCreated();
 ISeedUsers userSeederService = scope.ServiceProvider.GetRequiredService<ISeedUsers>();
 await userSeederService.SeedInitialUser();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
