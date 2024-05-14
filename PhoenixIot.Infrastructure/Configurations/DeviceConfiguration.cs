@@ -74,82 +74,82 @@ public class DeviceConfiguration : BaseConfiguration<Device>
 
         builder.Property(x => x.Val1)
             .HasColumnName("val_1")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val2)
             .HasColumnName("val_2")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val3)
             .HasColumnName("val_3")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val4)
             .HasColumnName("val_4")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val5)
             .HasColumnName("val_5")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val6)
             .HasColumnName("val_6")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val7)
             .HasColumnName("val_7")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val8)
             .HasColumnName("val_8")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val9)
             .HasColumnName("val_9")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val10)
             .HasColumnName("val_10")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val11)
             .HasColumnName("val_11")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val12)
             .HasColumnName("val_12")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val13)
             .HasColumnName("val_13")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val14)
             .HasColumnName("val_14")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val15)
             .HasColumnName("val_15")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val16)
             .HasColumnName("val_16")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val17)
             .HasColumnName("val_17")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val18)
             .HasColumnName("val_18")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val19)
             .HasColumnName("val_19")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
 
         builder.Property(x => x.Val20)
             .HasColumnName("val_20")
-            .HasMaxLength(64);
+            .HasMaxLength(256);
     }
 }
