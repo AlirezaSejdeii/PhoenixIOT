@@ -224,6 +224,6 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             device.Val18,
             device.Val19,
             device.Val20,
-            device.IsSync(DateTime.Now));
+            device.IsSync());
     }
 }

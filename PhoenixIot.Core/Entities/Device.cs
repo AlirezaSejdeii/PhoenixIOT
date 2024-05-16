@@ -212,7 +212,7 @@ public class Device : BaseEntity
         }
     }
 
-    public bool IsSync(DateTime now)
+    public bool IsSync()
     {
         if (Setting == SettingMode.Manual)
         {
@@ -221,16 +221,24 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Sensor)
         {
-            bool isFanSwitchSync = (decimal.Parse(Temperature!) >= FanSwitchOnAt &&
-                                    decimal.Parse(Temperature!) <= FanSwitchOffAt &&
-                                    Switch1 && Switch2) ||
-                                   (decimal.Parse(Temperature!) <= FanSwitchOnAt &&
-                                    decimal.Parse(Temperature!) >= FanSwitchOffAt &&
-                                    !Switch1 && !Switch2);
-            bool isWaterSwitchSync = (decimal.Parse(Humidity!) <= WaterSwitchOffAt && Switch3 && Switch4) ||
-                                     (decimal.Parse(Humidity!) >= WaterSwitchOffAt && !Switch3 && !Switch4);
+            bool isFanOn = Switch1 && Switch2;
+            bool isWaterOn = Switch3 & Switch4;
 
-            return isFanSwitchSync && isWaterSwitchSync;
+            bool fanShouldBeOn = decimal.Parse(Temperature!) >= FanSwitchOnAt &&
+                                 decimal.Parse(Temperature!) <= FanSwitchOffAt;
+
+            bool waterShouldBeOn = decimal.Parse(Humidity!) <= WaterSwitchOffAt;
+            if (fanShouldBeOn && isFanOn || !fanShouldBeOn && !isFanOn)
+            {
+                return true;
+            }
+
+            if (waterShouldBeOn&isWaterOn||!waterShouldBeOn&!isWaterOn)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         if (Setting == SettingMode.Timer)
