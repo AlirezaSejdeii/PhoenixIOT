@@ -237,18 +237,20 @@ public class Device : BaseEntity
         {
             TimeSpan start = StartWorkAt.ToTimeSpan();
             TimeSpan end = EndWorkAt.ToTimeSpan();
-            TimeSpan currentTime = now.TimeOfDay;
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
-            if ((end < start && (currentTime >= start || currentTime <= end)) ||
-                (currentTime >= start && currentTime <= end) &&
-                Switch1 && Switch2 && Switch3 && Switch4)
+            bool isCurrentTimeBetweenStartAndEnd = end < start
+                ? (currentTime >= start || currentTime <= end)
+                : (currentTime >= start && currentTime <= end);
+
+            bool allSwitchesTrue = Switch1 && Switch2 && Switch3 && Switch4;
+
+            if (isCurrentTimeBetweenStartAndEnd && allSwitchesTrue)
             {
                 return true;
             }
 
-            if ((end < start && (currentTime <= start || currentTime >= end)) ||
-                currentTime <= start && currentTime >= end &&
-                !Switch1 && !Switch2 && !Switch3 && !Switch4)
+            if (!isCurrentTimeBetweenStartAndEnd && !Switch1 && !Switch2 && !Switch3 && !Switch4)
             {
                 return true;
             }
