@@ -20,8 +20,8 @@ const int relay_pin4 = 14;
 
 char ssid[] = "Mr.Me";
 char pass[] = "123456789";
-char identifier[] = "test_devide_id_1234";
-char serverUrl[] = "https://phoenix.liara.run";
+char identifier[] = "device-0001";
+char serverUrl[] = "https://api.iot-gilelectronics.ir";
 
 char val1[] = "0";
 char val2[] = "0";
