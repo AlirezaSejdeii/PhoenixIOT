@@ -48,15 +48,26 @@ public class Device : BaseEntity
 
     // ---------------------------------------------------------------------------------
     // These setting just work when the Setting set Timer
-    public TimeOnly StartWorkAt { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
-    public TimeOnly EndWorkAt { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
+    public TimeOnly StartWorkAtRelay1 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
+    public TimeOnly EndWorkAtRelay1 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
+    
+    public TimeOnly StartWorkAtRelay2 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
+    public TimeOnly EndWorkAtRelay2 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
+    
+    public TimeOnly StartWorkAtRelay3 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
+    public TimeOnly EndWorkAtRelay3 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
+    
+    public TimeOnly StartWorkAtRelay4 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
+    public TimeOnly EndWorkAtRelay4 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
     // ---------------------------------------------------------------------------------
 
     public User? User { get; private set; }
     public DateTime? LastSync { get; private set; }
 
-    public string? Temperature { get; private set; }
-    public string? Humidity { get; private set; }
+    public string? WhetherTemperature { get; private set; }
+    public string? WhetherHumidity { get; private set; }
+    public string? SoilHumidity { get; private set; }
+    public string? LightBrightness { get; private set; }
     public string? Val1 { get; private set; }
     public string? Val2 { get; private set; }
     public string? Val3 { get; private set; }
@@ -103,8 +114,8 @@ public class Device : BaseEntity
         string? val20,
         DateTime now)
     {
-        Temperature = temperature;
-        Humidity = humidity;
+        WhetherTemperature = temperature;
+        WhetherHumidity = humidity;
         Val1 = val1;
         Val2 = val2;
         Val3 = val3;
@@ -164,7 +175,7 @@ public class Device : BaseEntity
     {
         if (Setting == SettingMode.Sensor)
         {
-            if (decimal.Parse(Temperature!) >= FanSwitchOnAt && decimal.Parse(Temperature!) <= FanSwitchOffAt)
+            if (decimal.Parse(WhetherTemperature!) >= FanSwitchOnAt && decimal.Parse(WhetherTemperature!) <= FanSwitchOffAt)
             {
                 Switch1 = true;
                 Switch2 = true;
@@ -175,7 +186,7 @@ public class Device : BaseEntity
                 Switch2 = false;
             }
 
-            if (decimal.Parse(Humidity!) <= WaterSwitchOffAt)
+            if (decimal.Parse(WhetherHumidity!) <= WaterSwitchOffAt)
             {
                 Switch3 = true;
                 Switch4 = true;
@@ -189,8 +200,8 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            TimeSpan start = StartWorkAt.ToTimeSpan();
-            TimeSpan end = EndWorkAt.ToTimeSpan();
+            TimeSpan start = StartWorkAtRelay1.ToTimeSpan();
+            TimeSpan end = EndWorkAtRelay1.ToTimeSpan();
             TimeSpan currentTime = now.TimeOfDay;
 
             if (
@@ -224,10 +235,10 @@ public class Device : BaseEntity
             bool isFanOn = Switch1 && Switch2;
             bool isWaterOn = Switch3 & Switch4;
 
-            bool fanShouldBeOn = decimal.Parse(Temperature!) >= FanSwitchOnAt &&
-                                 decimal.Parse(Temperature!) <= FanSwitchOffAt;
+            bool fanShouldBeOn = decimal.Parse(WhetherTemperature!) >= FanSwitchOnAt &&
+                                 decimal.Parse(WhetherTemperature!) <= FanSwitchOffAt;
 
-            bool waterShouldBeOn = decimal.Parse(Humidity!) <= WaterSwitchOffAt;
+            bool waterShouldBeOn = decimal.Parse(WhetherHumidity!) <= WaterSwitchOffAt;
             if (fanShouldBeOn && isFanOn || !fanShouldBeOn && !isFanOn)
             {
                 return true;
@@ -243,8 +254,8 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            TimeSpan start = StartWorkAt.ToTimeSpan();
-            TimeSpan end = EndWorkAt.ToTimeSpan();
+            TimeSpan start = StartWorkAtRelay1.ToTimeSpan();
+            TimeSpan end = EndWorkAtRelay1.ToTimeSpan();
             TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
             bool isCurrentTimeBetweenStartAndEnd = end < start
@@ -272,8 +283,8 @@ public class Device : BaseEntity
     public void SetTimer(TimeOnly updateStartAt, TimeOnly updateEndAt, DateTime now)
     {
         Setting = SettingMode.Timer;
-        StartWorkAt = updateStartAt;
-        EndWorkAt = updateEndAt;
+        StartWorkAtRelay1 = updateStartAt;
+        EndWorkAtRelay1 = updateEndAt;
         UpdatedAt = now;
     }
 

@@ -55,21 +55,51 @@ public class DeviceConfiguration : BaseConfiguration<Device>
             .HasColumnName("water_switch_off_from")
             .IsRequired();
 
-        builder.Property(x => x.StartWorkAt)
-            .HasColumnName("start_work_at");
+        // relay 1
+        builder.Property(x => x.StartWorkAtRelay1)
+            .HasColumnName("relay_1_start_work_at");
 
-        builder.Property(x => x.EndWorkAt)
-            .HasColumnName("end_work_at");
+        builder.Property(x => x.EndWorkAtRelay1)
+            .HasColumnName("relay_1_end_work_at");
+        
+        // relay 2
+        builder.Property(x => x.StartWorkAtRelay2)
+            .HasColumnName("relay_2_start_work_at");
+
+        builder.Property(x => x.EndWorkAtRelay2)
+            .HasColumnName("relay_2_end_work_at");
+        
+        // relay 3
+        builder.Property(x => x.StartWorkAtRelay3)
+            .HasColumnName("relay_3_start_work_at");
+
+        builder.Property(x => x.EndWorkAtRelay3)
+            .HasColumnName("relay_3_end_work_at");
+        
+        // relay 4
+        builder.Property(x => x.StartWorkAtRelay4)
+            .HasColumnName("relay_4_start_work_at");
+
+        builder.Property(x => x.EndWorkAtRelay4)
+            .HasColumnName("relay_4_end_work_at");
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.Devices);
 
-        builder.Property(x => x.Temperature)
-            .HasColumnName("temperature")
+        builder.Property(x => x.WhetherTemperature)
+            .HasColumnName("whether_temperature")
             .HasMaxLength(64);
 
-        builder.Property(x => x.Humidity)
-            .HasColumnName("humidity")
+        builder.Property(x => x.WhetherHumidity)
+            .HasColumnName("whether_humidity")
+            .HasMaxLength(64);
+        
+        builder.Property(x => x.SoilHumidity)
+            .HasColumnName("soil_humidity")
+            .HasMaxLength(64);
+        
+        builder.Property(x => x.LightBrightness)
+            .HasColumnName("light_brightness")
             .HasMaxLength(64);
 
         builder.Property(x => x.Val1)
