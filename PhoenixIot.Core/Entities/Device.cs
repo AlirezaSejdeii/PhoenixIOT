@@ -40,23 +40,22 @@ public class Device : BaseEntity
     // ---------------------------------------------------------------------------------
     // These setting just work when the Setting set Sensor
     // Fan do their job when Temperature is X and end their job when Temperature is Y
-    public int FanSwitchOnAt { get; private set; } = 25;
-    public int FanSwitchOffAt { get; private set; } = 30;
-
-    // Water switch should be OFF when Humidity is equal and greater than X
-    public int WaterSwitchOffAt { get; private set; } = 50;
+    public int WhetherHumidityLimit { get; private set; }
+    public int WhetherTemperatureLimit { get; private set; }
+    public int SoilHumidityLimit { get; private set; }
+    public int LightBrightnessLimit { get; private set; }
 
     // ---------------------------------------------------------------------------------
     // These setting just work when the Setting set Timer
     public TimeOnly StartWorkAtRelay1 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
     public TimeOnly EndWorkAtRelay1 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
-    
+
     public TimeOnly StartWorkAtRelay2 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
     public TimeOnly EndWorkAtRelay2 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
-    
+
     public TimeOnly StartWorkAtRelay3 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
     public TimeOnly EndWorkAtRelay3 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
-    
+
     public TimeOnly StartWorkAtRelay4 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(8));
     public TimeOnly EndWorkAtRelay4 { get; private set; } = TimeOnly.FromTimeSpan(TimeSpan.FromHours(12));
     // ---------------------------------------------------------------------------------
@@ -90,8 +89,10 @@ public class Device : BaseEntity
     public string? Val20 { get; private set; }
 
     public void UpdateVariables(
-        string? temperature,
-        string? humidity,
+        string? whetherTemperature,
+        string? whetherHumidity,
+        string? soilHumidity,
+        string? lightBrightness,
         string? val1,
         string? val2,
         string? val3,
@@ -114,8 +115,10 @@ public class Device : BaseEntity
         string? val20,
         DateTime now)
     {
-        WhetherTemperature = temperature;
-        WhetherHumidity = humidity;
+        WhetherTemperature = whetherTemperature;
+        WhetherHumidity = whetherHumidity;
+        SoilHumidity = soilHumidity;
+        LightBrightness = lightBrightness;
         Val1 = val1;
         Val2 = val2;
         Val3 = val3;
@@ -145,13 +148,13 @@ public class Device : BaseEntity
         UpdatedAt = now;
     }
 
-    public void UpdateRelays(bool updateFan1, bool updateFan2, bool updateWater1, bool updateWater2, DateTime now)
+    public void UpdateRelays(bool relay1, bool relay2, bool relay3, bool relay4, DateTime now)
     {
         Setting = SettingMode.Manual;
-        Switch1 = updateFan1;
-        Switch2 = updateFan2;
-        Switch3 = updateWater1;
-        Switch4 = updateWater2;
+        Switch1 = relay1;
+        Switch2 = relay2;
+        Switch3 = relay3;
+        Switch4 = relay4;
         UpdatedAt = now;
     }
 
@@ -175,53 +178,21 @@ public class Device : BaseEntity
     {
         if (Setting == SettingMode.Sensor)
         {
-            if (decimal.Parse(WhetherTemperature!) >= FanSwitchOnAt && decimal.Parse(WhetherTemperature!) <= FanSwitchOffAt)
-            {
-                Switch1 = true;
-                Switch2 = true;
-            }
-            else
-            {
-                Switch1 = false;
-                Switch2 = false;
-            }
-
-            if (decimal.Parse(WhetherHumidity!) <= WaterSwitchOffAt)
-            {
-                Switch3 = true;
-                Switch4 = true;
-            }
-            else
-            {
-                Switch3 = false;
-                Switch4 = false;
-            }
+            Switch1 = decimal.Parse(WhetherHumidity!) >= WhetherHumidityLimit;
+            Switch2 = decimal.Parse(WhetherTemperature!) >= WhetherTemperatureLimit;
+            Switch3 = decimal.Parse(SoilHumidity!) <= SoilHumidityLimit;
+            Switch4 = decimal.Parse(LightBrightness!) <= LightBrightnessLimit;
         }
 
         if (Setting == SettingMode.Timer)
         {
-            TimeSpan start = StartWorkAtRelay1.ToTimeSpan();
-            TimeSpan end = EndWorkAtRelay1.ToTimeSpan();
-            TimeSpan currentTime = now.TimeOfDay;
-
-            if (
-                (end < start && (currentTime >= start || currentTime <= end)) ||
-                (currentTime >= start && currentTime <= end))
-            {
-                Switch1 = true;
-                Switch2 = true;
-                Switch3 = true;
-                Switch4 = true;
-            }
-            else
-            {
-                Switch1 = false;
-                Switch2 = false;
-                Switch3 = false;
-                Switch4 = false;
-            }
+            Switch1 = ShouldBeOn(now, StartWorkAtRelay1, EndWorkAtRelay1);
+            Switch2 = ShouldBeOn(now, StartWorkAtRelay2, EndWorkAtRelay2);
+            Switch3 = ShouldBeOn(now, StartWorkAtRelay3, EndWorkAtRelay3);
+            Switch4 = ShouldBeOn(now, StartWorkAtRelay4, EndWorkAtRelay4);
         }
     }
+
 
     public bool IsSync()
     {
@@ -232,19 +203,23 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Sensor)
         {
-            bool isFanOn = Switch1 && Switch2;
-            bool isWaterOn = Switch3 & Switch4;
+            bool relay1ShouldBeOn = decimal.Parse(WhetherHumidity!) >= WhetherHumidityLimit;
+            bool relay2ShouldBeOn = decimal.Parse(WhetherTemperature!) >= WhetherTemperatureLimit;
+            bool relay3ShouldBeOn = decimal.Parse(SoilHumidity!) <= SoilHumidityLimit;
+            bool relay4ShouldBeOn = decimal.Parse(LightBrightness!) <= LightBrightnessLimit;
 
-            bool fanShouldBeOn = decimal.Parse(WhetherTemperature!) >= FanSwitchOnAt &&
-                                 decimal.Parse(WhetherTemperature!) <= FanSwitchOffAt;
-
-            bool waterShouldBeOn = decimal.Parse(WhetherHumidity!) <= WaterSwitchOffAt;
-            if (fanShouldBeOn && isFanOn || !fanShouldBeOn && !isFanOn)
+            if (relay1ShouldBeOn && Switch1 ||
+                relay2ShouldBeOn && Switch2 ||
+                relay3ShouldBeOn && Switch3 ||
+                relay4ShouldBeOn && Switch4)
             {
                 return true;
             }
 
-            if (waterShouldBeOn&isWaterOn||!waterShouldBeOn&!isWaterOn)
+            if (!relay1ShouldBeOn && !Switch1 ||
+                !relay2ShouldBeOn && !Switch2 ||
+                !relay3ShouldBeOn && !Switch3 ||
+                !relay4ShouldBeOn && !Switch4)
             {
                 return true;
             }
@@ -254,22 +229,23 @@ public class Device : BaseEntity
 
         if (Setting == SettingMode.Timer)
         {
-            TimeSpan start = StartWorkAtRelay1.ToTimeSpan();
-            TimeSpan end = EndWorkAtRelay1.ToTimeSpan();
-            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+            bool relay1ShouldBeOn = ShouldBeOn(DateTime.Now, StartWorkAtRelay1, EndWorkAtRelay1);
+            bool relay2ShouldBeOn = ShouldBeOn(DateTime.Now, StartWorkAtRelay2, EndWorkAtRelay2);
+            bool relay3ShouldBeOn = ShouldBeOn(DateTime.Now, StartWorkAtRelay3, EndWorkAtRelay3);
+            bool relay4ShouldBeOn = ShouldBeOn(DateTime.Now, StartWorkAtRelay4, EndWorkAtRelay4);
 
-            bool isCurrentTimeBetweenStartAndEnd = end < start
-                ? (currentTime >= start || currentTime <= end)
-                : (currentTime >= start && currentTime <= end);
-
-            bool allSwitchesTrue = Switch1 && Switch2 && Switch3 && Switch4;
-
-            if (isCurrentTimeBetweenStartAndEnd && allSwitchesTrue)
+            if (relay1ShouldBeOn && Switch1 ||
+                relay2ShouldBeOn && Switch2 ||
+                relay3ShouldBeOn && Switch3 ||
+                relay4ShouldBeOn && Switch4)
             {
                 return true;
             }
 
-            if (!isCurrentTimeBetweenStartAndEnd && !Switch1 && !Switch2 && !Switch3 && !Switch4)
+            if (!relay1ShouldBeOn && !Switch1 ||
+                !relay2ShouldBeOn && !Switch2 ||
+                !relay3ShouldBeOn && !Switch3 ||
+                !relay4ShouldBeOn && !Switch4)
             {
                 return true;
             }
@@ -280,21 +256,44 @@ public class Device : BaseEntity
         return false;
     }
 
-    public void SetTimer(TimeOnly updateStartAt, TimeOnly updateEndAt, DateTime now)
+    public void SetTimer(
+        TimeOnly updateStartAtRelay1, 
+        TimeOnly updateEndAtRelay1, 
+        TimeOnly updateStartAtRelay2, 
+        TimeOnly updateEndAtRelay2, 
+        TimeOnly updateStartAtRelay3, 
+        TimeOnly updateEndAtRelay3, 
+        TimeOnly updateStartAtRelay4, 
+        TimeOnly updateEndAtRelay4, 
+        DateTime now)
     {
         Setting = SettingMode.Timer;
-        StartWorkAtRelay1 = updateStartAt;
-        EndWorkAtRelay1 = updateEndAt;
+        StartWorkAtRelay1 = updateStartAtRelay1;
+        EndWorkAtRelay1 = updateEndAtRelay1;
+        
+        StartWorkAtRelay2 = updateStartAtRelay2;
+        EndWorkAtRelay2 = updateEndAtRelay2;
+        
+        StartWorkAtRelay3 = updateStartAtRelay3;
+        EndWorkAtRelay3 = updateEndAtRelay3;
+        
+        StartWorkAtRelay4 = updateStartAtRelay4;
+        EndWorkAtRelay4 = updateEndAtRelay4;
         UpdatedAt = now;
     }
 
-    public void SetSensorValues(int updateFanOnAtTemp, int updateFanOffAtTemp, int updateWaterOffFromHumidity,
+    public void SetSensorValues(
+        int whetherHumidityLimit, 
+        int whetherTemperatureLimit,
+        int soilHumidityLimit,
+        int lightBrightnessLimit,
         DateTime now)
     {
         Setting = SettingMode.Sensor;
-        FanSwitchOnAt = updateFanOnAtTemp;
-        FanSwitchOffAt = updateFanOffAtTemp;
-        WaterSwitchOffAt = updateWaterOffFromHumidity;
+        WhetherHumidityLimit = whetherHumidityLimit;
+        WhetherTemperatureLimit = whetherTemperatureLimit;
+        SoilHumidityLimit = soilHumidityLimit;
+        LightBrightnessLimit = lightBrightnessLimit;
         UpdatedAt = now;
     }
 
@@ -310,5 +309,15 @@ public class Device : BaseEntity
         Switch3Name = switch3Name;
         Switch4Name = switch4Name;
         UpdatedAt = now;
+    }
+
+    private static bool ShouldBeOn(DateTime now, TimeOnly startWork, TimeOnly endWork)
+    {
+        TimeSpan start = startWork.ToTimeSpan();
+        TimeSpan end = endWork.ToTimeSpan();
+        TimeSpan currentTime = now.TimeOfDay;
+
+        return (end < start && (currentTime >= start || currentTime <= end)) ||
+               (currentTime >= start && currentTime <= end);
     }
 }

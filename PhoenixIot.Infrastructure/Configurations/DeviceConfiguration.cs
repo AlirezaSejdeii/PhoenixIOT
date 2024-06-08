@@ -43,16 +43,20 @@ public class DeviceConfiguration : BaseConfiguration<Device>
         builder.Property(x => x.LastSync)
             .HasColumnName("last_sync");
 
-        builder.Property(x => x.FanSwitchOnAt)
-            .HasColumnName("fan_switch_on_at")
+        builder.Property(x => x.WhetherHumidityLimit)
+            .HasColumnName("whether_humidity_limit")
             .IsRequired();
 
-        builder.Property(x => x.FanSwitchOffAt)
-            .HasColumnName("fan_switch_off_at")
+        builder.Property(x => x.WhetherTemperatureLimit)
+            .HasColumnName("whether_temperature_limit")
             .IsRequired();
-
-        builder.Property(x => x.WaterSwitchOffAt)
-            .HasColumnName("water_switch_off_from")
+        
+        builder.Property(x => x.SoilHumidityLimit)
+            .HasColumnName("soil_humidity_limit")
+            .IsRequired();
+        
+        builder.Property(x => x.LightBrightnessLimit)
+            .HasColumnName("light_brightness_limit")
             .IsRequired();
 
         // relay 1

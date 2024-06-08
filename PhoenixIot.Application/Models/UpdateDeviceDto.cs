@@ -1,8 +1,10 @@
 namespace PhoenixIot.Application.Models;
 
 public record UpdateDeviceDto(
-    string? Temperature,
-    string? Humidity,
+    string? WhetherTemperature,
+    string? WhetherHumidity,
+    string? SoilHumidity,
+    string? LightBrightness,
     string? Val1,
     string? Val2,
     string? Val3,

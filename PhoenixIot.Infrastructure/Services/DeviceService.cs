@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
@@ -72,8 +71,10 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
     public async Task UpdateVariablesAsync(UpdateDeviceDto deviceDto, Device device)
     {
         device.UpdateVariables(
-            deviceDto.Temperature,
-            deviceDto.Humidity,
+            deviceDto.WhetherTemperature,
+            deviceDto.WhetherHumidity,
+            deviceDto.SoilHumidity,
+            deviceDto.LightBrightness,
             deviceDto.Val1,
             deviceDto.Val2,
             deviceDto.Val3,
@@ -156,20 +157,57 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 
     public async Task UpdateTimer(TimerUpdate update, Device device)
     {
-        TimeOnly startTime =
-            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAt).Add(TimeSpan.FromMinutes(update.StartMinAt)));
+        TimeOnly startTimeRelay1 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAtRelay1)
+                .Add(TimeSpan.FromMinutes(update.StartMinAtRelay1)));
+        TimeOnly endTimeRelay1 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAtRelay1)
+                .Add(TimeSpan.FromMinutes(update.EndMinAtRelay1)));
 
-        TimeOnly endTime =
-            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAt).Add(TimeSpan.FromMinutes(update.EndMinAt)));
+        TimeOnly startTimeRelay2 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAtRelay2)
+                .Add(TimeSpan.FromMinutes(update.StartMinAtRelay2)));
+        TimeOnly endTimeRelay2 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAtRelay2)
+                .Add(TimeSpan.FromMinutes(update.EndMinAtRelay2)));
 
-        device.SetTimer(startTime, endTime, DateTime.Now);
+
+        TimeOnly startTimeRelay3 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAtRelay3)
+                .Add(TimeSpan.FromMinutes(update.StartMinAtRelay3)));
+        TimeOnly endTimeRelay3 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAtRelay3)
+                .Add(TimeSpan.FromMinutes(update.EndMinAtRelay3)));
+
+        TimeOnly startTimeRelay4 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.StartHourAtRelay4)
+                .Add(TimeSpan.FromMinutes(update.StartMinAtRelay4)));
+        TimeOnly endTimeRelay4 =
+            TimeOnly.FromTimeSpan(TimeSpan.FromHours(update.EndHourAtRelay4)
+                .Add(TimeSpan.FromMinutes(update.EndMinAtRelay4)));
+
+        device.SetTimer(
+            startTimeRelay1,
+            endTimeRelay1,
+            startTimeRelay2,
+            endTimeRelay2,
+            startTimeRelay3,
+            endTimeRelay3,
+            startTimeRelay4,
+            endTimeRelay4,
+            DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateSensor(SensorUpdate update, Device device)
     {
-        device.SetSensorValues(update.FanOnAtTemp, update.FanOffAtTemp, update.WaterOffFromHumidity, DateTime.Now);
+        device.SetSensorValues(
+            update.WhetherHumidityLimit,
+            update.WhetherTemperatureLimit,
+            update.SoilHumidityLimit,
+            update.LightBrightnessLimit,
+            DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
@@ -196,14 +234,23 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
             device.Switch3Name,
             device.Switch4Name,
             device.Setting.ToString(),
-            device.FanSwitchOnAt,
-            device.FanSwitchOffAt,
-            device.WaterSwitchOffAt,
+            device.WhetherHumidityLimit,
+            device.WhetherTemperatureLimit,
+            device.SoilHumidityLimit,
+            device.LightBrightnessLimit,
             device.StartWorkAtRelay1,
             device.EndWorkAtRelay1,
+            device.StartWorkAtRelay2,
+            device.EndWorkAtRelay2,
+            device.StartWorkAtRelay3,
+            device.EndWorkAtRelay3,
+            device.StartWorkAtRelay4,
+            device.EndWorkAtRelay4,
             device.User?.Username,
             device.WhetherTemperature,
             device.WhetherHumidity,
+            device.SoilHumidity,
+            device.LightBrightness,
             device.Val1,
             device.Val2,
             device.Val3,
