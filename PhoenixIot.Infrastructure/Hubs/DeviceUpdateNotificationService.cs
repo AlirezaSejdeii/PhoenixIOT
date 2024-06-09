@@ -30,11 +30,8 @@ public class DeviceUpdateNotificationService : IDeviceUpdateNotificationService
         if (givenDeviceUserId is not null)
         {
             _logger.LogInformation("sending notification to given device user");
-            // await _hubContext.Clients.User(givenDeviceUserId.ToString()!)
-            //     .OnDeviceUpdated(DeviceService.MapDevice(device));
-            await _hubContext.Clients.All
+            await _hubContext.Clients.User(givenDeviceUserId.ToString()!)
                 .OnDeviceUpdated(DeviceService.MapDevice(device));
-            
         }
 
         List<Guid> admins = await _dbContext.Users.Where(x => x.Roles.Any(b => b.Title == RolesNames.Admin))
