@@ -109,7 +109,7 @@ public class DeviceService(AppDbContext dbContext) : IDeviceService
 
     public async Task UpdateDeviceRelays(RelayUpdate update, Device device)
     {
-        device.UpdateRelays(update.Fan1, update.Fan2, update.Water1, update.Water2, DateTime.Now);
+        device.UpdateRelays(update.Relay1, update.Relay2, update.Relay3, update.Relay4, DateTime.Now);
         dbContext.Devices.Update(device);
         await dbContext.SaveChangesAsync();
     }
