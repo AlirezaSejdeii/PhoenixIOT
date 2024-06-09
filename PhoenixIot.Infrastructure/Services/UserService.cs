@@ -94,7 +94,8 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
 
     public Task<User?> GetUserById(Guid assignInfoUserId)
     {
-        return dbContext.Users.FirstOrDefaultAsync(x => x.Id == assignInfoUserId);
+        return dbContext.Users
+            .Include(x => x.Roles).FirstOrDefaultAsync(x => x.Id == assignInfoUserId);
     }
 
     public async Task AssignDeviceToUserAsync(Device device, User user)
@@ -112,7 +113,7 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
         List<UserInfoDto> items = await infoList.ToListAsync();
         return new UserListDto(items, total);
     }
-    
+
     public async Task ToggleActivity(User user)
     {
         user.ToggleActive(DateTime.Now);

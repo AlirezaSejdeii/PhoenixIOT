@@ -56,6 +56,11 @@ public class UsersController(IUserService userService) : ControllerBase
             return Ok(new ErrorModel("کاربری با این مشخصات یافت نشد"));
         }
 
+        if (user.Roles.Any(x => x.Title == RolesNames.Admin))
+        {
+            return Ok(new ErrorModel("کاربر ادمین قابل حذف نیست"));
+        }
+
         await userService.DeleteUser(user);
         return NoContent();
     }
