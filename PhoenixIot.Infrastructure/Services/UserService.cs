@@ -108,7 +108,8 @@ public class UserService(AppDbContext dbContext, IOptions<JwtConfigDto> jwtOptio
     public async Task<UserListDto> GetAllUsersAsync()
     {
         IQueryable<UserInfoDto> infoList =
-            dbContext.Users.Select(x => new UserInfoDto(x.Id, x.Username, x.IsActive, x.CreatedAt));
+            dbContext.Users.Select(x =>
+                new UserInfoDto(x.Id, x.Username, x.IsActive, x.Roles.Select(role => role.Title).FirstOrDefault(), x.CreatedAt));
         int total = infoList.Count();
         List<UserInfoDto> items = await infoList.ToListAsync();
         return new UserListDto(items, total);
