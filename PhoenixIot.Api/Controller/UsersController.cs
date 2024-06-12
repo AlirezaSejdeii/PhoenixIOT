@@ -151,8 +151,8 @@ public class UsersController(IUserService userService) : ControllerBase
     public ActionResult<UserDataDto> GetUserInformation()
     {
         UserDataDto userDataDto = new(
-            Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value),
-            User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value,
+            Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value),
+            User.Claims.First(x => x.Type == ClaimTypes.Name).Value,
             User.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
         );
         return Ok(userDataDto);

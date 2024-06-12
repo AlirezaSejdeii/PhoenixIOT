@@ -4,13 +4,18 @@ using PhoenixIot.Application.Models;
 using PhoenixIot.Application.Services;
 using PhoenixIot.Core.Entities;
 using PhoenixIot.Extentions;
+using PhoenixIot.Hubs;
 using PhoenixIot.Models;
 
 namespace PhoenixIot.Controller;
 
 [ApiController]
 [Route("device")]
-public class DeviceController(IUserService userService, IDeviceService deviceService, ILogger<DeviceController> logger)
+public class DeviceController(
+    IUserService userService,
+    IDeviceService deviceService,
+    ILogger<DeviceController> logger,
+    IDeviceUpdateNotificationService notificationService)
     : ControllerBase
 {
     /// <summary>
@@ -27,7 +32,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     [Authorize]
     public ActionResult<DeviceDto> GetUserDevices()
     {
-        Guid userId = Guid.Parse(User.Identity!.Name!);
+        Guid userId = User.GetUserId();
 
         if (!userService.IsUserActive(userId))
         {
@@ -41,7 +46,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
     [Authorize]
     public async Task<ActionResult<DeviceDto>> GetDeviceInfo([FromRoute] Guid deviceId)
     {
-        Guid userId = Guid.Parse(User.Identity!.Name!);
+        Guid userId = User.GetUserId();
         if (!await deviceService.IsDeviceExist(deviceId))
         {
             return Ok(new ErrorModel("دستگاه یافت نشد"));
@@ -103,6 +108,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         }
 
         await deviceService.UpdateIdentifier(device, updateIdentifier.NewIdentifier);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
@@ -132,6 +138,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
             updateDevice.Switch3Name,
             updateDevice.Switch4Name,
             updateDevice.Identifier);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
@@ -154,7 +161,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (!User.Claims.IsAdmin())
         {
             logger.LogInformation("Check is device belong to user");
-            Guid userId = Guid.Parse(User.Identity!.Name!);
+            Guid userId = User.GetUserId();
             if (!device.IsBelongToUser(userId))
             {
                 logger.LogInformation("Device is not belong to user");
@@ -170,6 +177,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
         logger.LogInformation("Updating device");
         await deviceService.UpdateDeviceRelays(update, device);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
@@ -192,7 +200,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (!User.Claims.IsAdmin())
         {
             logger.LogInformation("Check is device belong to user");
-            Guid userId = Guid.Parse(User.Identity!.Name!);
+            Guid userId = User.GetUserId();
             if (!device.IsBelongToUser(userId))
             {
                 logger.LogInformation("Device is not belong to user");
@@ -208,6 +216,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
         logger.LogInformation("Updating device");
         await deviceService.UpdateTimer(update, device);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
@@ -231,7 +240,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
         if (!User.Claims.IsAdmin())
         {
             logger.LogInformation("Check is device belong to user");
-            Guid userId = Guid.Parse(User.Identity!.Name!);
+            Guid userId = User.GetUserId();
             if (!device.IsBelongToUser(userId))
             {
                 logger.LogInformation("Device is not belong to user");
@@ -247,6 +256,7 @@ public class DeviceController(IUserService userService, IDeviceService deviceSer
 
         logger.LogInformation("Updating device");
         await deviceService.UpdateSensor(update, device);
+        await notificationService.DeviceUpdated(device);
         return NoContent();
     }
 
