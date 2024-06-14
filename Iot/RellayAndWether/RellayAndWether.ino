@@ -131,8 +131,12 @@ void loop() {
     http.addHeader("access-control-allow-origin", String(serverUrl));
 
     StaticJsonDocument<22> doc;
-    doc["temperature"] = String(temperature);
-    doc["humidity"] = String(humidity);
+    // doc["temperature"] = String(temperature);
+    // doc["humidity"] = String(humidity);
+    doc["whetherTemperature"] = String(WHETHER_TEMP); // دمای محیط
+    doc["whetherHumidity"] = String(WHETHER_HUMIDITY); // رطوبت محیط
+    doc["soilHumidity"] = String(SOIL_HUMIDITY); // رطوبت خاک
+    doc["lightBrightness"] = String(LIGHT_BRIGHTNESS); // روشنایی
     char jsonBuffer[100];
 
 
